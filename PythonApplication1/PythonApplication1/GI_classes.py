@@ -1,8 +1,48 @@
 import random
 
+wordList=[]
+sizeX=0
+sizeY=0
+directionDistribution = "000111222"
+
+fit_OutOfRange = -10
+fit_InRange = 5
+
+
+def fitness(ind):
+    _fitness =0
+    _grid = {}
+    
+
+    for w in ind.words:
+        #CHECK OUT OF BOUND
+        if (w.positionEnd[0] > sizeX) or (w.positionEnd[1] > sizeY):
+            _fitness += fit_OutOfRange
+        else:
+            _fitness += fit_InRange
+
+        #print(_fitness)
+            #out of bound
+        #CHECK OVERLAPP
+    
+        #CHECK GRP ORDER    
+        pass
+
+    #
+    pass
+    return _fitness
+
+def getDirectionOffset(direction):
+    if direction == 0:   #Left-Right
+        return [1,0]
+    elif direction == 1: #Top-Down
+        return [0,1]
+    elif direction == 2: #Diagonal Down
+        return [1,1]    
+
 ###############################################################################
 #
-#  CLASS word
+#  CLASS population
 #
 ###############################################################################
 class population(object):
@@ -10,8 +50,13 @@ class population(object):
 
     def __init__(self,size):
         self.size = size
+#        self.individuals= [individual(["ONE","TWO","THREE","4"]) for i in range(size)]
+        self.individuals= [individual() for i in range(size)]
 
-        self.individuals= [individual(["ONE","TWO","THREE","4"]) for i in range(size)]
+    def getPersonalitys(self):
+        #return "asdölf"
+        return [hash(i) for i in self.individuals]
+        pass
 
 
 
@@ -30,13 +75,18 @@ class individual(object):
     def test(self,str):
         print(str)
 
-    def __init__(self,wordlist):
-        self.test ="asdfa"
-        self.words = [word().getRandom(w) for w in wordlist ]
+    def __init__(self):
+        self.words = [word().getRandom(w[0],True) for w in wordList]
         pass
     
     def __repr__(self):
         return "".join(str(i)  for i in self.words)
+
+    def __hash__(self):
+        #print (hash(repl(self)))
+        return hash(repr(self))
+        pass
+        
                     
 
 ###############################################################################
@@ -50,39 +100,50 @@ class word(object):
     """
 
     def __init__(self,text="",position=[0,0],direction=0):
-        
-        if direction == 0:   #Left-Right
-            self.xD=1
-            self.yD=0
-        elif direction == 1: #Top-Down
-            self.xD=0
-            self.yD=1
-        elif direction == 2: #Diagonal Down
-            self.xD=1
-            self.yD=1
 
-            
+        self.dirOffset=getDirectionOffset(direction)
+
         self.text=text
-        self.grid = { letter([position[0]+(self.xD*i),position[1]+(self.yD*i)],c) 
+        self.textLen = len(text)
+        self.grid = { letter([position[0]+(self.dirOffset[0]*i),position[1]+(self.dirOffset[1]*i)],c) 
                             for i, c in enumerate(text) }
 
-        self.position=position
-        self.direction=direction
+        self.positionStart=position
+        self.positionEnd=[ position[0] + (self.textLen-1)*self.dirOffset[0],
+                           position[1] + (self.textLen-1)*self.dirOffset[1]]
 
-    def getRandom(self,text):
-        self.__init__(text,[random.randint(0,15),random.randint(0,15)],int(random.choice("012")))
+
+
+    def getRandom(self,text,checkBoundery = False):
+        tDir =  int(random.choice(directionDistribution))
+        self.dirOffset=getDirectionOffset(tDir)
+        self.textLen = len(text)
+        
+        if checkBoundery:
+            lenght = [(self.textLen-1)*self.dirOffset[0],(self.textLen-1)*self.dirOffset[1]]
+
+            self.__init__(text, [random.randint(0,sizeX-lenght[0]),
+                                 random.randint(0,sizeY-lenght[1])] ,tDir)
+        else:
+            self.__init__(text, [random.randint(0,sizeX),random.randint(0,sizeY)],tDir)
+        
+
+        print(self.text)
+        print(self.textLen)
+        print(self.positionStart)
+        print(self.positionEnd)
         return self 
 
-    def getPosX(self):
-        return self.position[0]
+    def getXStart(self):
+        return int(self.position[0])
 
-    def getPosY(self):
-        return self.position[1]
+    def getYStart(self):
+        return int(self.position[1])
         
     def __str__(self):
            return "".join("Text:" + self.text + 
-                          " Pos:" + str(self.position[0]) + "," + str(self.position[1]) +
-                          " Dir:" + str(self.direction) 
+                          " Pos:" + str(self.positionStart[0]) + "," + str(self.positionStart[1]) +
+                          " Dir:" + str(self.dirOffset) 
                           )
      
 ###############################################################################
