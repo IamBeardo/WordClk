@@ -46,7 +46,7 @@ GI_classes.wordList = wordList
 GI_classes.sizeX = 15
 GI_classes.sizeY = 15
 
-c=population(10)
+c=population(1)
 #print(c.individuals)
 print ("".join(str(P) + "\n" for P in c.getPersonalitys()))
 

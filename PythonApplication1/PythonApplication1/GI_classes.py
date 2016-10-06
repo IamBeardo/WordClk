@@ -11,20 +11,31 @@ fit_InRange = 5
 
 def fitness(ind):
     _fitness =0
-    _grid = {}
-    
+    _grid = set()
+    _intersections = []    
 
     for w in ind.words:
-        #CHECK OUT OF BOUND
+        ### CHECK OUT OF BOUND ###################################
+        # check if a word exeeds the set sizeX/sizeY-grid size
+        ##########################################################
         if (w.positionEnd[0] > sizeX) or (w.positionEnd[1] > sizeY):
             _fitness += fit_OutOfRange
         else:
             _fitness += fit_InRange
 
-        #print(_fitness)
-            #out of bound
-        #CHECK OVERLAPP
-    
+        ### CHECK OVERLAP CHARS AND CREATE GRID SUMMARY ##########
+        # check if a word exeeds the set sizeX/sizeY-grid size
+        ##########################################################
+
+        
+        
+        _intersections = list(_grid.intersection(w.grid))
+        for i in _inter        
+        _grid = _grid.union(w.grid)
+        print(_grid)
+        print("##################################")
+        print(list(_grid))
+
         #CHECK GRP ORDER    
         pass
 
@@ -101,16 +112,19 @@ class word(object):
 
     def __init__(self,text="",position=[0,0],direction=0):
 
-        self.dirOffset=getDirectionOffset(direction)
+        if text == "": 
+            pass
+        else:
+            self.dirOffset=getDirectionOffset(direction)
 
-        self.text=text
-        self.textLen = len(text)
-        self.grid = { letter([position[0]+(self.dirOffset[0]*i),position[1]+(self.dirOffset[1]*i)],c) 
-                            for i, c in enumerate(text) }
-
-        self.positionStart=position
-        self.positionEnd=[ position[0] + (self.textLen-1)*self.dirOffset[0],
-                           position[1] + (self.textLen-1)*self.dirOffset[1]]
+            self.text=text
+            self.textLen = len(text)
+            self.grid = [ letter([position[0]+(self.dirOffset[0]*i),position[1]+(self.dirOffset[1]*i)],c) 
+                                for i, c in enumerate(text) ]
+            print(self.grid)
+            self.positionStart=position
+            self.positionEnd=[ position[0] + (self.textLen-1)*self.dirOffset[0],
+                               position[1] + (self.textLen-1)*self.dirOffset[1]]
 
 
 
