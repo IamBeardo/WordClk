@@ -5,16 +5,42 @@ sizeX=0
 sizeY=0
 directionDistribution = "000111222"
 
-fit_OutOfRange = -10
-fit_InRange = 5
+fit_OutOfRange            = -50
+fit_InRange               =   5
+fit_PositiveIntersection  =  10
+fit_NegativIntersection   =  -5
+fit_PositiveGroupOrder    =  10
+fit_NegativeGroupOrder    = -20
+
+def display(ind):
+    _grid = dict()
+
+    for count,w in enumerate(ind.words):
+        _grid.update(w.grid)
+
+    print("#" * (sizeX+2))
+    for y in range(sizeY):
+        print("#",end="")
+        for x in range(sizeX):
+            key = ''.join([str(x),":",str(y)])
+            if key in _grid:
+                print(_grid[key].text,end="")
+            else:
+                print(" ",end=""),
+        print("#")
+    print("#" * (sizeX+2))
 
 
-def fitness(ind):
+    return ""
+
+
+
+def calcFitness(ind):
     _fitness =0
-    _grid = set()
+    _grid = dict()
     _intersections = []    
 
-    for w in ind.words:
+    for count,w in enumerate(ind.words):
         ### CHECK OUT OF BOUND ###################################
         # check if a word exeeds the set sizeX/sizeY-grid size
         ##########################################################
@@ -24,24 +50,45 @@ def fitness(ind):
             _fitness += fit_InRange
 
         ### CHECK OVERLAP CHARS AND CREATE GRID SUMMARY ##########
-        # check if a word exeeds the set sizeX/sizeY-grid size
+        #  
         ##########################################################
+        # create a set of intersecting positions and rank them
+        _intersections = (_grid.keys() & w.grid)
+        for i in _intersections:        
+            if _grid[i].text == w.grid[i].text:
+                #intersection with matching text values (letter)
+                _fitness += fit_PositiveIntersection
+            else:
+                #intersection with missmatching text values (letter)
+                _fitness += fit_NegativIntersection
+            
+        _grid.update(w.grid)
 
+    #CHECK GRP ORDER   
+    #print(ind.words)   
+    wSorted = ind.words[:]
+    wSorted.sort()
+    #print(wSorted)
+    for i in range(1,len(wSorted)):
+        if groupInOrder(wSorted[i-1].group,wSorted[i].group):
+            _fitness += fit_PositiveGroupOrder
+        else:
+            _fitness += fit_NegativeGroupOrder
         
-        
-        _intersections = list(_grid.intersection(w.grid))
-        for i in _inter        
-        _grid = _grid.union(w.grid)
-        print(_grid)
-        print("##################################")
-        print(list(_grid))
 
-        #CHECK GRP ORDER    
-        pass
 
     #
     pass
     return _fitness
+
+def groupInOrder(a,b):
+    # Compare list of groups like: a[1,3,0] b[0,4,1]
+    # Zero (0) - indicates no order
+    for i in range(len(a)):
+        if (a[i] > b[i]) and (b[i] > 0):
+            return False
+    return True
+
 
 def getDirectionOffset(direction):
     if direction == 0:   #Left-Right
@@ -82,13 +129,15 @@ class population(object):
 class individual(object):
     """A single individual, sub-partical of a population"""
 
-
-    def test(self,str):
-        print(str)
+    _fitness = None
+    def fitness(self):
+        if self._fitness is None:
+            self._fitness=calcFitness(self)
+        return self._fitness
 
     def __init__(self):
-        self.words = [word().getRandom(w[0],True) for w in wordList]
-        pass
+        self.words = [word().getRandom(w,True) for w in wordList]
+        #print("asdf")
     
     def __repr__(self):
         return "".join(str(i)  for i in self.words)
@@ -110,42 +159,54 @@ class word(object):
     word object 
     """
 
-    def __init__(self,text="",position=[0,0],direction=0):
+    def __init__(self,w=["",0,0,0],position=[0,0],direction=0):
+        self.grid = dict()
+        self.group = w[1:] 
+        self.text=w[0]
 
-        if text == "": 
+
+        if self.text == "": 
             pass
         else:
             self.dirOffset=getDirectionOffset(direction)
+            self.textLen = len(self.text)
 
-            self.text=text
-            self.textLen = len(text)
-            self.grid = [ letter([position[0]+(self.dirOffset[0]*i),position[1]+(self.dirOffset[1]*i)],c) 
-                                for i, c in enumerate(text) ]
-            print(self.grid)
+
+            for i, c in enumerate(self.text):
+                x=position[0]+(self.dirOffset[0]*i)
+                y=position[1]+(self.dirOffset[1]*i)
+                l=letter([x,y],c)
+                self.grid[str(l)] = l
+
+
+            
+#            self.grid = [ letter([position[0]+(self.dirOffset[0]*i),position[1]+(self.dirOffset[1]*i)],c) 
+#                                for i, c in enumerate(text) ]
+#            print(self.grid)
             self.positionStart=position
             self.positionEnd=[ position[0] + (self.textLen-1)*self.dirOffset[0],
                                position[1] + (self.textLen-1)*self.dirOffset[1]]
+            self.positionAbs=self.positionStart[1] * sizeX +self.positionStart[0]
 
 
-
-    def getRandom(self,text,checkBoundery = False):
+    def getRandom(self,w,checkBoundery = False):
         tDir =  int(random.choice(directionDistribution))
         self.dirOffset=getDirectionOffset(tDir)
-        self.textLen = len(text)
+        self.textLen = len(w[0])
         
         if checkBoundery:
             lenght = [(self.textLen-1)*self.dirOffset[0],(self.textLen-1)*self.dirOffset[1]]
 
-            self.__init__(text, [random.randint(0,sizeX-lenght[0]),
+            self.__init__(w, [random.randint(0,sizeX-lenght[0]),
                                  random.randint(0,sizeY-lenght[1])] ,tDir)
         else:
-            self.__init__(text, [random.randint(0,sizeX),random.randint(0,sizeY)],tDir)
+            self.__init__(w, [random.randint(0,sizeX),random.randint(0,sizeY)],tDir)
         
 
-        print(self.text)
-        print(self.textLen)
-        print(self.positionStart)
-        print(self.positionEnd)
+        #print(self.text)
+        #print(self.textLen)
+        #print(self.positionStart)
+        #print(self.positionEnd)
         return self 
 
     def getXStart(self):
@@ -155,11 +216,18 @@ class word(object):
         return int(self.position[1])
         
     def __str__(self):
-           return "".join("Text:" + self.text + 
+        return "".join("Text:" + self.text + 
                           " Pos:" + str(self.positionStart[0]) + "," + str(self.positionStart[1]) +
                           " Dir:" + str(self.dirOffset) 
                           )
-     
+    def __repr__(self):
+        return self.__str__()
+
+    def __lt__(self,other):
+        return self.positionAbs < other.positionAbs
+    #def __eq__(self,other):
+    #    t= self.positionAbs == other.positionAbs
+    #    return t
 ###############################################################################
 #
 #  CLASS letter

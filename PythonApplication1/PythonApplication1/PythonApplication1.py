@@ -40,6 +40,8 @@ wordList = [
                 ["twelve"       ,5,0,0],
                 ["noon"         ,5,0,0],
                 ["midnight"     ,5,0,0],
+
+                ["hello"        ,0,0,0],
             ]
 
 GI_classes.wordList = wordList
@@ -47,22 +49,13 @@ GI_classes.sizeX = 15
 GI_classes.sizeY = 15
 
 c=population(1)
-#print(c.individuals)
+
+
 print ("".join(str(P) + "\n" for P in c.getPersonalitys()))
 
-print (GI_classes.fitness(c.individuals[0]))
+print (GI_classes.calcFitness(c.individuals[0]))
+print (c.individuals[0].fitness())
+
+GI_classes.display(c.individuals[0])
 
 
-
-
-
-
-# a = letter([1,3],"A")
-#b = letter([1,3],"B")
-#c = letter([1,3],"C")
-#print (a)
-#skapa = word("Hello",[0,1],0)
-#gapa = word("World",[4,0],1)
-#print (skapa.grid)
-#print (gapa.grid)
-#print (skapa.grid.intersection(gapa.grid))
