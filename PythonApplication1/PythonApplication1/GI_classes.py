@@ -1,18 +1,52 @@
-import random
+import random, os
 
 wordList=[]
 sizeX=0
 sizeY=0
 directionDistribution = "000111222"
 
-fit_OutOfRange            = -50
+fit_OutOfRange            = -50 #prevented in getRandom word
 fit_InRange               =   5
-fit_PositiveIntersection  =  10
-fit_NegativIntersection   =  -5
-fit_PositiveGroupOrder    =  10
-fit_NegativeGroupOrder    = -20
+fit_PositiveIntersection  =  43
+fit_NegativIntersection   =  -103
+fit_PositiveGroupOrder    =  88
+fit_NegativeGroupOrder    = -120
 
-def display(ind):
+evo_TournamentSize = 5
+evo_Elitism = 1
+
+
+
+def getParents(lst):
+    
+    t=set() 
+    while len(t) < min(2,len(lst)):
+        t.add(getIndFromTournament(lst,evo_TournamentSize))
+        #print(len(t))
+        #os.system("pause")
+        print(t)
+    return sorted(list(t))
+
+def getIndFromTournament(lst, candidates):
+    #selects <candidates> number of elements at random from <lst>
+    #returning the highest in the selection
+    t =set()
+    lstLen = len(lst)
+    if lstLen < candidates: candidates = lstLen
+    while len(t) < candidates:
+        t.add(lst[random.randrange(lstLen)])
+    return max(list(t))
+
+
+
+def debugInd(ind):
+    for i,w in enumerate(ind.words):
+        tt=individual()
+        tt.words= ind.words[:i]
+        display(tt,debug=True)
+        os.system("pause")
+
+def display(ind,debug=False):
     _grid = dict()
 
     for count,w in enumerate(ind.words):
@@ -30,12 +64,12 @@ def display(ind):
         print("#")
     print("#" * (sizeX+2))
 
-
+    print(ind.fitness(debug))
     return ""
 
 
 
-def calcFitness(ind):
+def calcFitness(ind,debug=False):
     _fitness =0
     _grid = dict()
     _intersections = []    
@@ -46,8 +80,10 @@ def calcFitness(ind):
         ##########################################################
         if (w.positionEnd[0] > sizeX) or (w.positionEnd[1] > sizeY):
             _fitness += fit_OutOfRange
+            if debug: print(w.text, "out of range", _fitness)
         else:
             _fitness += fit_InRange
+            if debug: print(w.text, "in range", _fitness)
 
         ### CHECK OVERLAP CHARS AND CREATE GRID SUMMARY ##########
         #  
@@ -58,11 +94,15 @@ def calcFitness(ind):
             if _grid[i].text == w.grid[i].text:
                 #intersection with matching text values (letter)
                 _fitness += fit_PositiveIntersection
+                if debug: print(i, "pos intersect", _grid[i].text, _fitness)
             else:
                 #intersection with missmatching text values (letter)
                 _fitness += fit_NegativIntersection
+                if debug: print(i, "neg intersect", _grid[i].text, _fitness)
             
+        #w.grid.difference_update(_grid)
         _grid.update(w.grid)
+        #_grid = dict(w.grid.items() + _grid.items())
 
     #CHECK GRP ORDER   
     #print(ind.words)   
@@ -70,15 +110,14 @@ def calcFitness(ind):
     wSorted.sort()
     #print(wSorted)
     for i in range(1,len(wSorted)):
+        #print(wSorted[i-1].group,wSorted[i].group,groupInOrder(wSorted[i-1].group,wSorted[i].group))
         if groupInOrder(wSorted[i-1].group,wSorted[i].group):
             _fitness += fit_PositiveGroupOrder
+            if debug: print(i, "grp order pos", _fitness)
         else:
             _fitness += fit_NegativeGroupOrder
-        
+            if debug: print(i, "grp order neg", _fitness)
 
-
-    #
-    pass
     return _fitness
 
 def groupInOrder(a,b):
@@ -98,23 +137,57 @@ def getDirectionOffset(direction):
     elif direction == 2: #Diagonal Down
         return [1,1]    
 
-###############################################################################
+
+
+def getOffspring(parents,dual=False):
+        parentsMatrix=[parents]        
+        if dual: parentsMatrix.append(parents.reverse())
+        print(parentsMatrix) 
+
+##############################################################################
 #
 #  CLASS population
 #
 ###############################################################################
 class population(object):
     """ pop """
-
+    #individuals = []
     def __init__(self,size):
         self.size = size
 #        self.individuals= [individual(["ONE","TWO","THREE","4"]) for i in range(size)]
         self.individuals= [individual() for i in range(size)]
 
+
     def getPersonalitys(self):
         #return "asdölf"
         return [hash(i) for i in self.individuals]
-        pass
+
+    def evolve(self):
+
+        self.individuals.sort()
+        self.individuals.reverse()
+
+        nextGeneration = population(0)
+
+        # Add elits if any
+        for i in self.individuals[:evo_Elitism]:
+            nextGeneration.add(i)
+
+
+        while nextGeneration.size < self.size:
+            pass # get parents , then mate
+            #for p in getParents(self.individuals):
+             #      nextGeneration.add(p)
+                   
+        #print ("".join(str(P) + "\n" for P in nextGeneration.getPersonalitys()))
+
+            getOffspring(getParents( self.individuals))
+    def add(self,ind):
+        self.individuals.append(ind)
+        self.size+=1
+
+        
+
 
 
 
@@ -130,14 +203,15 @@ class individual(object):
     """A single individual, sub-partical of a population"""
 
     _fitness = None
-    def fitness(self):
+    def fitness(self,debug=False):
         if self._fitness is None:
-            self._fitness=calcFitness(self)
+            self._fitness=calcFitness(self,debug)
         return self._fitness
 
     def __init__(self):
         self.words = [word().getRandom(w,True) for w in wordList]
         #print("asdf")
+        print ("Created ind with fitness: " ,self.fitness())
     
     def __repr__(self):
         return "".join(str(i)  for i in self.words)
@@ -145,7 +219,10 @@ class individual(object):
     def __hash__(self):
         #print (hash(repl(self)))
         return hash(repr(self))
-        pass
+    
+    def __lt__(self,other):
+        #print (hash(repl(self)))
+        return self.fitness() < other.fitness()
         
                     
 

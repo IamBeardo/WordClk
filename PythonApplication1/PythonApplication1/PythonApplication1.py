@@ -1,7 +1,7 @@
 from GI_classes import individual, word, population, letter
 import GI_classes
 #print ("Hell0 W0rld")
-
+import os
 
 
 
@@ -48,14 +48,24 @@ GI_classes.wordList = wordList
 GI_classes.sizeX = 15
 GI_classes.sizeY = 15
 
-c=population(1)
+c=population(10)
+#GI_classes.display (GI_classes.getIndFromTournament(c.individuals,18))
 
 
-print ("".join(str(P) + "\n" for P in c.getPersonalitys()))
 
-print (GI_classes.calcFitness(c.individuals[0]))
-print (c.individuals[0].fitness())
+#a,b = GI_classes.getParents(c.individuals)
+#GI_classes.display (a)
+#GI_classes.display (b)
 
-GI_classes.display(c.individuals[0])
+c.evolve()
 
+#print ("".join(str(P) + "\n" for P in c.getPersonalitys()))
+
+#print (GI_classes.calcFitness(c.individuals[0]))
+#print (c.individuals[0].fitness())
+
+#GI_classes.display(c.individuals[0])
+
+
+#GI_classes.debugInd(c.individuals[0])
 
