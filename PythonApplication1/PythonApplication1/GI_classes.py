@@ -1,4 +1,5 @@
 import random, os
+from collections import Counter
 
 wordList=[]
 sizeX=0
@@ -8,34 +9,44 @@ directionDistribution = "000111222"
 fit_OutOfRange            = -50 #prevented in getRandom word
 fit_InRange               =   5
 fit_PositiveIntersection  =  43
-fit_NegativIntersection   =  -103
-fit_PositiveGroupOrder    =  88
-fit_NegativeGroupOrder    = -120
+fit_NegativIntersection   =  -203
+fit_PositiveGroupOrder    =  188
+fit_NegativeGroupOrder    = -420
 
-evo_TournamentSize = 5
-evo_Elitism = 1
+evo_TournamentSize = 3
+evo_Elitism = 0
+evo_MutationRate = 0.02
 
+d=Counter()
 
-
-def getParents(lst):
+def OLD_getParents(lst):
     
     t=set() 
     while len(t) < min(2,len(lst)):
-        t.add(getIndFromTournament(lst,evo_TournamentSize))
+        n=getIndFromTournament(evo_TournamentSize)
+        t.add(n)
         #print(len(t))
         #os.system("pause")
-        print(t)
+        #print(t)
+    
+    #print("Parents:",list(t))
     return sorted(list(t))
 
-def getIndFromTournament(lst, candidates):
+def OLD___getIndFromTournament(lst, candidates):
     #selects <candidates> number of elements at random from <lst>
     #returning the highest in the selection
     t =set()
     lstLen = len(lst)
     if lstLen < candidates: candidates = lstLen
+    #print("")
     while len(t) < candidates:
-        t.add(lst[random.randrange(lstLen)])
-    return max(list(t))
+        ttt=(lst[random.randrange(lstLen)])
+        t.add(ttt)
+        #print(" added: ", ttt, end="") 
+    ret = max(list(t))
+    #print("returning:[" + str(ret.index) +"]",ret)
+
+    return ret
 
 
 
@@ -139,11 +150,30 @@ def getDirectionOffset(direction):
 
 
 
-def getOffspring(parents,dual=False):
+def getOffspring(parents,popSize,dual=True):
         parentsMatrix=[parents]        
-        if dual: parentsMatrix.append(parents.reverse())
-        print(parentsMatrix) 
+        if dual: parentsMatrix.append(list(reversed(parents)))
+        #print(parentsMatrix) 
+        children=[]               
+        crosspoint = random.randrange(len(wordList))
+        for p in parentsMatrix:
+            a,b = p
+            d.update([a.index,b.index])
+            child = individual(-1,(a.index + b.index)/2/popSize)
+            child.words = a.words[:crosspoint] + b.words[crosspoint:]
+            #print (child)
+            children.append(child)
 
+        return children
+
+
+def mutate(ind):
+    if random.random() < evo_MutationRate:
+        rWord=random.randrange(len(wordList))
+        #print("orig",ind.words[rWord])
+        ind.words[rWord].getRandom(wordList[rWord],True)
+        #print("orig",ind.words[rWord])
+    return ind
 ##############################################################################
 #
 #  CLASS population
@@ -151,38 +181,71 @@ def getOffspring(parents,dual=False):
 ###############################################################################
 class population(object):
     """ pop """
-    #individuals = []
     def __init__(self,size):
+        self.generation = 0
         self.size = size
 #        self.individuals= [individual(["ONE","TWO","THREE","4"]) for i in range(size)]
-        self.individuals= [individual() for i in range(size)]
+        self.individuals= [individual(i) for i in range(size)]
+        self.order()
 
+    def printStat(self):
+        #for ind in self.individuals:
+        #    print("FITNESS:",ind.fitness())
+        print("GENERATION:", self.generation)
+        print("MAX:",max(self.individuals).fitness())
+        print("MIN:",min(self.individuals).fitness())
+        print("SUM:",sum(self.individuals))
+        print("AVR:",sum(self.individuals)/len(self.individuals))
+        print("GENPOOL:",len(self.getGenPool()))
+
+    def getParents(self):
+    
+        t=set() 
+        while len(t) < 2:
+            n=self.getIndFromTournament(evo_TournamentSize)
+            #print("FROM TOURNAMENT:", n)
+            t.add(n)
+        #print("returning:", t)
+        return sorted(list(t))
+
+    def getIndFromTournament(self,candidates):
+        #selects <candidates> number of elements at random individuals
+        #returning the highest in the selection
+        return max([random.choice(self.individuals) for i in range(candidates)])
 
     def getPersonalitys(self):
         #return "asdölf"
         return [hash(i) for i in self.individuals]
 
-    def evolve(self):
 
+    def getGenPool(self):
+        #return "asdölf"
+        return set([i for i in self.individuals])
+
+    def order(self):
         self.individuals.sort()
-        self.individuals.reverse()
+        for i,ind in enumerate(self.individuals):
+            ind.index=i
 
-        nextGeneration = population(0)
+    def evolve(self,generations=1):
+        for gens in range(generations):
+            nextGeneration = population(0)
+            # Add elits if any
+            nextGeneration.add(max(self.individuals))
 
-        # Add elits if any
-        for i in self.individuals[:evo_Elitism]:
-            nextGeneration.add(i)
+            while nextGeneration.size < self.size:
+                for child in getOffspring(self.getParents( ),self.size):
+                    if nextGeneration.size < self.size: nextGeneration.add(mutate(child))
+                    #print("Child Added", child)
+            self.individuals = nextGeneration.individuals
+            self.generation +=1
+            self.order()
 
 
-        while nextGeneration.size < self.size:
-            pass # get parents , then mate
-            #for p in getParents(self.individuals):
-             #      nextGeneration.add(p)
-                   
-        #print ("".join(str(P) + "\n" for P in nextGeneration.getPersonalitys()))
 
-            getOffspring(getParents( self.individuals))
+
     def add(self,ind):
+        ind.index=self.size+1
         self.individuals.append(ind)
         self.size+=1
 
@@ -208,24 +271,36 @@ class individual(object):
             self._fitness=calcFitness(self,debug)
         return self._fitness
 
-    def __init__(self):
+    def __init__(self,index,grandIndex=-1):
+        self._fitness= None
+        self.index = index
+        self.grandIndex = grandIndex
         self.words = [word().getRandom(w,True) for w in wordList]
-        #print("asdf")
-        print ("Created ind with fitness: " ,self.fitness())
+
     
     def __repr__(self):
+        return "".join("[" + str(self.index) +"]")
+    def __repr2__(self):
         return "".join(str(i)  for i in self.words)
-
     def __hash__(self):
         #print (hash(repl(self)))
-        return hash(repr(self))
+        return hash((self.__repr2__()))
     
     def __lt__(self,other):
         #print (hash(repl(self)))
-        return self.fitness() < other.fitness()
-        
+        return self.fitness() < other.fitness()    
+    
+    
+    def __radd__(self,other):
+        #print (hash(repl(self)))
+        return self.fitness() + other
+     
+    def __str__(self):
+        t=["Index:[",str(self.index), "], GI:[",str(self.grandIndex),
+           "], Fitness: [",str(self.fitness()),"] ,Identity:",str(hash(self))]
+        return "".join(t)
                     
-
+    
 ###############################################################################
 #
 #  CLASS word

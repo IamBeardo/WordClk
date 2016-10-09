@@ -48,16 +48,32 @@ GI_classes.wordList = wordList
 GI_classes.sizeX = 15
 GI_classes.sizeY = 15
 
-c=population(10)
+c=population(100)
+c.printStat()
 #GI_classes.display (GI_classes.getIndFromTournament(c.individuals,18))
 
-
+#print(c.individuals[0])
+#GI_classes.mutate(c.individuals[0])
+#os.system("pause")
+#print(c.individuals[0])
+os.system("pause")
 
 #a,b = GI_classes.getParents(c.individuals)
 #GI_classes.display (a)
 #GI_classes.display (b)
 
-c.evolve()
+for i in range(10):
+    c.evolve(100)
+    c.printStat()
+    GI_classes.display(max(c.individuals))
+    #os.system("pause")
+
+    #for key in sorted(GI_classes.d):
+    #    print ("%s: %s" % (key, GI_classes.d[key]))
+    #print(GI_classes.d)
+    #for i in c.individuals:
+    #    print(i.index,i.fitness(),i.grandIndex)
+    
 
 #print ("".join(str(P) + "\n" for P in c.getPersonalitys()))
 
