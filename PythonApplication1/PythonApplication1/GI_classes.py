@@ -19,6 +19,8 @@ evo_MutationRate = 0.02
 
 d=Counter()
 
+tempGenInd=0
+
 def OLD_getParents(lst):
     
     t=set() 
@@ -85,6 +87,11 @@ def calcFitness(ind,debug=False):
     _grid = dict()
     _intersections = []    
 
+
+
+
+    ########### NEEEEEEEDS rework..... grp order 0...n needs to be top contributare to fitness.
+
     for count,w in enumerate(ind.words):
         ### CHECK OUT OF BOUND ###################################
         # check if a word exeeds the set sizeX/sizeY-grid size
@@ -120,12 +127,16 @@ def calcFitness(ind,debug=False):
     wSorted = ind.words[:]
     wSorted.sort()
     #print(wSorted)
+    orderingIndex=0
+    
     for i in range(1,len(wSorted)):
         #print(wSorted[i-1].group,wSorted[i].group,groupInOrder(wSorted[i-1].group,wSorted[i].group))
         if groupInOrder(wSorted[i-1].group,wSorted[i].group):
-            _fitness += fit_PositiveGroupOrder
+            orderingIndex += 1
+            _fitness += fit_PositiveGroupOrder * orderingIndex
             if debug: print(i, "grp order pos", _fitness)
         else:
+            orderingIndex = 0
             _fitness += fit_NegativeGroupOrder
             if debug: print(i, "grp order neg", _fitness)
 
@@ -220,7 +231,7 @@ class population(object):
 
     def getGenPool(self):
         #return "asdölf"
-        return set([i for i in self.individuals])
+        return set([hash(i) for i in self.individuals])
 
     def order(self):
         self.individuals.sort()
@@ -228,6 +239,7 @@ class population(object):
             ind.index=i
 
     def evolve(self,generations=1):
+        
         for gens in range(generations):
             nextGeneration = population(0)
             # Add elits if any
@@ -237,7 +249,7 @@ class population(object):
                 for child in getOffspring(self.getParents( ),self.size):
                     if nextGeneration.size < self.size: nextGeneration.add(mutate(child))
                     #print("Child Added", child)
-            self.individuals = nextGeneration.individuals
+            self.individuals = nextGeneration.individuals.copy()
             self.generation +=1
             self.order()
 
@@ -246,6 +258,7 @@ class population(object):
 
     def add(self,ind):
         ind.index=self.size+1
+        ind.fitness(force=True)
         self.individuals.append(ind)
         self.size+=1
 
@@ -266,8 +279,8 @@ class individual(object):
     """A single individual, sub-partical of a population"""
 
     _fitness = None
-    def fitness(self,debug=False):
-        if self._fitness is None:
+    def fitness(self,debug=False,force=False):
+        if (self._fitness is None) or (force):
             self._fitness=calcFitness(self,debug)
         return self._fitness
 

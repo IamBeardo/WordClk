@@ -48,7 +48,7 @@ GI_classes.wordList = wordList
 GI_classes.sizeX = 15
 GI_classes.sizeY = 15
 
-c=population(100)
+c=population(1000)
 c.printStat()
 #GI_classes.display (GI_classes.getIndFromTournament(c.individuals,18))
 
@@ -63,7 +63,7 @@ os.system("pause")
 #GI_classes.display (b)
 
 for i in range(10):
-    c.evolve(100)
+    c.evolve(1)
     c.printStat()
     GI_classes.display(max(c.individuals))
     #os.system("pause")
