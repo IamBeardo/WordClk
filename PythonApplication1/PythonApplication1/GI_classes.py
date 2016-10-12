@@ -7,8 +7,8 @@ sizeX=0
 sizeY=0
 directionDistribution = "000111222"
 
-fit_OutOfRange            = -50 #prevented in getRandom word
-fit_InRange               =   5
+fit_OutOfRange            = -50 #prevented in getRandom word, but not from mutatuion
+fit_InRange               =  1
 fit_PositiveIntersection  =  43
 fit_NegativIntersection   =  -203
 fit_PositiveGroupOrder    =  188
@@ -79,7 +79,12 @@ def display(ind,debug=False):
     print("#" * (sizeX+2))
 
     print(ind.fitness(debug))
+    print("Grp In Order {}, Grp Out of order {}".format(ind.grpInOrder,ind.grpOutOfOrder))
+    print("txt In range {}, txt Out of range {}".format(ind.textInRange,ind.textOutOfRange))
+    print("Pos intersection {}, Neg intersection {}".format(ind.PosIntersection,ind.NegIntersection))
+
     return ""
+
 
 
 
@@ -153,87 +158,75 @@ def calcFitness(ind,debug=False):
 
     ########### NEEEEEEEDS rework..... grp order 0...n needs to be top contributare to fitness.
 
+    ind.textOutOfRange=0
+    ind.textInRange=0
+    ind.PosIntersection =0
+    ind.NegIntersection =0
+
     for count,w in enumerate(ind.words):
         ### CHECK OUT OF BOUND ###################################
         # check if a word exeeds the set sizeX/sizeY-grid size
         ##########################################################
         pass
-        #if (w.positionEnd[0] > sizeX) or (w.positionEnd[1] > sizeY):
-        #    _fitness += fit_OutOfRange
-        #    if debug: print(w.text, "out of range", _fitness)
-        #else:
-        #    _fitness += fit_InRange
-        #    if debug: print(w.text, "in range", _fitness)
+        if (w.positionEnd[0] > sizeX) or (w.positionEnd[1] > sizeY):
+            _fitness += fit_OutOfRange
+            ind.textOutOfRange += 1
+            if debug: print(w.text, "out of range", _fitness)
+        else:
+            _fitness += fit_InRange
+            ind.textInRange += 1
+            if debug: print(w.text, "in range", _fitness)
 
         ### CHECK OVERLAP CHARS AND CREATE GRID SUMMARY ##########
         #  
         ##########################################################
-        # create a set of intersecting positions and rank them
-        #_intersections = (_grid.keys() & w.grid)
-        #for i in _intersections:        
-        #    if _grid[i].text == w.grid[i].text:
-        #        #intersection with matching text values (letter)
-        #        _fitness += fit_PositiveIntersection
-        #        if debug: print(i, "pos intersect", _grid[i].text, _fitness)
-        #    else:
-        #        #intersection with missmatching text values (letter)
-        #        _fitness += fit_NegativIntersection
-        #        if debug: print(i, "neg intersect", _grid[i].text, _fitness)
+        #create a set of intersecting positions and rank them
+        
+
+
+        _intersections = (_grid.keys() & w.grid)
+        for i in _intersections:        
+            if _grid[i].text == w.grid[i].text:
+                #intersection with matching text values (letter)
+                _fitness += fit_PositiveIntersection
+                ind.PosIntersection += 1
+                if debug: print(i, "pos intersect", _grid[i].text, _fitness)
+            else:
+                #intersection with missmatching text values (letter)
+                _fitness += fit_NegativIntersection
+                ind.NegIntersection += 1
+                if debug: print(i, "neg intersect", _grid[i].text, _fitness)
             
 
-        #_grid.update(w.grid)
+        _grid.update(w.grid)
 
 
     #CHECK GRP ORDER   
-    #Store index and waitedIndex
-   
-    #lastWaitedIndex = (w.group[0] * 1000) + (w.group[1] * 100) +(w.group[2] * 10)
-    for i,w in enumerate(ind.words):
-        w.index = i
-        #w.waitedIndex = (w.group[0] * 1000) + (w.group[1] * 100) +(w.group[2] * 10)
-
-
-
-
-    #print ("words",ind.words)
     wSorted = sorted(ind.words)
-    #print ("words sorted",wSorted)
     orderingIndex=0
 
-    #Store relative index 
-    for i,w in enumerate(wSorted):
-        w.relIndex = i
+    ind.grpInOrder=0
+    ind.grpOutOfOrder=0
 
-    multiplierBase = 100
-    multiplier = len(ind.words)
-    #a=ind.words[0]
     a=wSorted[0]
-
-    #_fitness = (a.relIndex - a.index) * (multiplierBase * multiplier)
-
     #for b in ind.words[1:]:
     for b in wSorted[1:]:
         if groupInOrder(a.group,b.group):
             _fitness += (2-(b.groupIndex-a.groupIndex))* fit_PositiveGroupOrder
+            ind.grpInOrder += 1
 
         else:
              _fitness += (a.groupIndex-b.groupIndex) * fit_NegativeGroupOrder
-
+             ind.grpOutOfOrder += 1
         #update a for next itteration
         a=b
-    
 
-    
-    #for i in range(1,len(wSorted)):
-    #    #print(wSorted[i-1].group,wSorted[i].group,groupInOrder(wSorted[i-1].group,wSorted[i].group))
-    #    if groupInOrder(wSorted[i-1].group,wSorted[i].group):
-    #        orderingIndex += 1
-    #        _fitness += fit_PositiveGroupOrder * orderingIndex
-    #        if debug: print(i, "grp order pos", _fitness)
-    #    else:
-    #        orderingIndex = 0
-    #        _fitness += fit_NegativeGroupOrder
-    #        if debug: print(i, "grp order neg", _fitness)
+
+#    if ind.grpOutOfOrder==0:
+    if (ind.grpOutOfOrder==0) and (ind.NegIntersection==0):
+        print("GRPS OK, Int OK")
+        import sys
+        #sys.exit("GRPS IN ORDER")
 
     return _fitness
 
@@ -285,13 +278,30 @@ def getOffspring(parents,popSize,dual=True):
 
 def mutate(ind):
     if random.random() < evo_MutationRate:
-        rWord=random.randrange(len(wordList))
-        print("MUTATION")
-        print("orig",ind.words[rWord])
-        #ind.words[rWord].getRandom(wordList[rWord],True)
-        ind.words[rWord]=word().getRandom(wordList[rWord],True)
-        #.getRandom(wordList[rWord],True)
-        print("orig",ind.words[rWord])
+
+        mutationType = random.random()
+
+
+        if mutationType < 0:
+            pass
+        elif mutationType < 0.5:
+            #Swap Mutate dont work ---- copys word should only copy cord and update grid
+            #print("MUTTTTTTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+            a=random.randrange(len(ind.words))
+            b=random.randrange(len(ind.words))
+            while b==a: b=random.randrange(len(ind.words))
+            wA = copy.deepcopy(ind.words[a])
+            wB = copy.deepcopy(ind.words[b])
+            wA.position , wB.position = wB.position, wA.position
+            wA.reValidate()
+            wB.reValidate()
+            ind.words[a],ind.words[b] = wA,wB
+        else:
+            #Mutate by random new word pos
+            #print("MUTTTTTTTTW")
+            rWord=random.randrange(len(wordList))
+            ind.words[rWord]=word().getRandom(wordList[rWord],True)
+
     return ind
 ##############################################################################
 #
@@ -316,7 +326,8 @@ class population(object):
         print("SUM:",sum(self.individuals))
         print("AVR:",sum(self.individuals)/len(self.individuals))
         print("GENPOOL:",len(self.getGenPool()))
-        print ("\n".join(self.getPersonalitys()))
+        #print ("\n".join(self.getPersonalitys()))
+        
         
 
     def getParents(self):
@@ -353,21 +364,34 @@ class population(object):
     def evolve(self,generations=1):
         
         for gens in range( generations):
-            print("evolve!")
+            
             nextGeneration = population(0)
             # Add elits if any
-            nextGeneration.add(copy.copy(max(self.individuals)))
+            #nextGeneration.add(copy.copy(max(self.individuals)))
+            tSet=set()
+            tSet.add(copy.copy(max(self.individuals)))
             
             if self.generation == 11:
                 self.generation=11
-            
-            while nextGeneration.size < self.size:
+
+            #while nextGeneration.size < self.size:
+            #    for child in getOffspring(self.getParents( ),self.size):
+            #        if nextGeneration.size < self.size: nextGeneration.add(mutate(child))
+            while len(tSet) < self.size:
                 for child in getOffspring(self.getParents( ),self.size):
-                    if nextGeneration.size < self.size: nextGeneration.add(mutate(child))
-                    #print("Child Added", child)
+                    if len(tSet) < self.size: tSet.add(mutate(child))
+                    #print("NEXT GEN COUNT:", len(tSet))
+            
+            for c in tSet:
+                nextGeneration.add(c)
+            
+    
+                #print("Child Added", child)
+#            self.individuals = nextGeneration.individuals.copy()
             self.individuals = nextGeneration.individuals.copy()
             self.generation +=1
             self.order()
+            print("Generation Complete: {}".format(self.generation))
 
 
 
@@ -412,7 +436,7 @@ class individual(object):
         self._index = aaa
         
 
-    def __init__(self,i,grandIndex=-1):
+    def __init__(self,i=-1,grandIndex=-1):
         self._index = i
         #print ("ind created")
         self._fitness= None
@@ -470,31 +494,43 @@ class word(object):
         self.group = w[1:4]
         self.groupIndex = w[4] 
         self.text=w[0]
-
+        self.direction=direction
+        self.position = position
 
         if self.text == "": 
             pass
         else:
-            self.dirOffset=getDirectionOffset(direction)
-            self.textLen = len(self.text)
+            #self.dirOffset=getDirectionOffset(direction)
+            #self.textLen = len(self.text)
+            pass
+            self.reValidate()
+            #for i, c in enumerate(self.text):
+            #    x=position[0]+(self.dirOffset[0]*i)
+            #    y=position[1]+(self.dirOffset[1]*i)
+            #    l=letter([x,y],c)
+            #    self.grid[str(l)] = l
+
+            #self.positionStart=position
+            #self.positionEnd=[ position[0] + (self.textLen-1)*self.dirOffset[0],
+            #                   position[1] + (self.textLen-1)*self.dirOffset[1]]
+            #self.positionAbs=self.positionStart[1] * sizeX +self.positionStart[0]
 
 
-            for i, c in enumerate(self.text):
-                x=position[0]+(self.dirOffset[0]*i)
-                y=position[1]+(self.dirOffset[1]*i)
-                l=letter([x,y],c)
-                self.grid[str(l)] = l
+    
+    def reValidate(self):
+        self.dirOffset=getDirectionOffset(self.direction)
+        self.textLen = len(self.text)   
+                
+        for i, c in enumerate(self.text):
+            x=self.position[0]+(self.dirOffset[0]*i)
+            y=self.position[1]+(self.dirOffset[1]*i)
+            l=letter([x,y],c)
+            self.grid[str(l)] = l
 
-
-            
-#            self.grid = [ letter([position[0]+(self.dirOffset[0]*i),position[1]+(self.dirOffset[1]*i)],c) 
-#                                for i, c in enumerate(text) ]
-#            print(self.grid)
-            self.positionStart=position
-            self.positionEnd=[ position[0] + (self.textLen-1)*self.dirOffset[0],
-                               position[1] + (self.textLen-1)*self.dirOffset[1]]
-            self.positionAbs=self.positionStart[1] * sizeX +self.positionStart[0]
-
+        self.positionStart=self.position
+        self.positionEnd=[ self.position[0] + (self.textLen-1)*self.dirOffset[0],
+                            self.position[1] + (self.textLen-1)*self.dirOffset[1]]
+        self.positionAbs=self.positionStart[1] * sizeX +self.positionStart[0]
 
     def getRandom(self,w,checkBoundery = False):
         tDir =  int(random.choice(directionDistribution))

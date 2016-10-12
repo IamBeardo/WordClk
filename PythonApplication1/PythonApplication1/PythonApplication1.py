@@ -31,37 +31,37 @@ wordList = [
                 ["to"           ,4,0,0,     7],
                 ["past"         ,4,0,0,     7],
 
-                ["one"          ,5,0,0,     8],
-                ["two"          ,5,0,0,     8],
-                ["three"        ,5,0,0,     8],
-                ["four"         ,5,0,0,     8],
-                ["five"         ,5,0,0,     8],
-                ["six"          ,5,0,0,     8],
-                ["seven"        ,5,0,0,     8],
-                ["eight"        ,5,0,0,     8],
-                ["nine"         ,5,0,0,     8],
-                ["ten"          ,5,0,0,     8],
-                ["eleven"       ,5,0,0,     8],
-                ["twelve"       ,5,0,0,     8],
-                ["noon"         ,5,0,0,     8],
+                #["one"          ,5,0,0,     8],
+                #["two"          ,5,0,0,     8],
+                #["three"        ,5,0,0,     8],
+                #["four"         ,5,0,0,     8],
+                #["five"         ,5,0,0,     8],
+                #["six"          ,5,0,0,     8],
+                #["seven"        ,5,0,0,     8],
+                #["eight"        ,5,0,0,     8],
+                #["nine"         ,5,0,0,     8],
+                #["ten"          ,5,0,0,     8],
+                #["eleven"       ,5,0,0,     8],
+                #["twelve"       ,5,0,0,     8],
+                #["noon"         ,5,0,0,     8],
                 ["midnight"     ,5,0,0,     8],
 
             ]
-wordList = [
-                ["First_1"           ,1,0,1,     1],
-                ["First_2"           ,1,0,2,     2],
+#wordList = [
+#                ["First_1"           ,1,0,1,     1],
+#                ["First_2"           ,1,0,2,     2],
 
-                ["Second_A"        ,2,0,0,     3],
-                ["Second_B"       ,2,0,0,     3],
+#                ["Second_A"        ,2,0,0,     3],
+#                ["Second_B"       ,2,0,0,     3],
 
-                ["TRE"          ,3,0,0,     4]]
+#                ["TRE"          ,3,0,0,     4]]
 
 GI_classes.wordList = wordList
 GI_classes.sizeX = 15
 GI_classes.sizeY = 15
 
 import random
-random.seed("apa")
+random.seed("h r r")
 c=population(50)
 print("i")
 
@@ -76,14 +76,16 @@ os.system("pause")
 
 
 
-for i in range(100):
+for i in range(1000):
     c.evolve(10)
     c.printStat()
     GI_classes.display(max(c.individuals))
+    #GI_classes.debugInd(max(c.individuals))
+
     #for ind in c.individuals:
     #    GI_classes.display(ind)
     #    os.system("pause")
-    os.system("pause")
+    #os.system("pause")
 
     
 
