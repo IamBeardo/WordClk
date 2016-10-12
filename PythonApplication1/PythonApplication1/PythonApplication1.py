@@ -1,5 +1,7 @@
 from GI_classes import individual, word, population, letter
 import GI_classes
+import hashlib
+import copy
 #print ("Hell0 W0rld")
 import os
 
@@ -8,80 +10,81 @@ import os
 
 
 wordList = [
-                ["It"           ,1,0,1],
-                ["is"           ,1,0,2],
+                ["hello"        ,0,0,0,     0],
 
-                ["about"        ,2,0,0],
-                ["almost"       ,2,0,0],
-                ["soon"         ,2,0,0],
 
-                ["ten"          ,3,0,0],
-                ["quarter"      ,3,0,0],
-                ["twenty"       ,3,0,0],
-                ["half"         ,3,0,0],
+                ["It"           ,1,0,1,     1],
+                ["is"           ,1,0,2,     2],
 
-                ["twenty"       ,3,0,1],
-                ["five"         ,3,0,2],
+                ["about"        ,2,0,0,     3],
+                ["almost"       ,2,0,0,     3],
+                ["soon"         ,2,0,0,     3],
 
-                ["to"           ,4,0,0],
-                ["past"         ,4,0,0],
+                ["ten"          ,3,0,0,     4],
+                ["quarter"      ,3,0,0,     4],
+                ["twenty"       ,3,0,0,     4],
+                ["half"         ,3,0,0,     4],
 
-                ["one"          ,5,0,0],
-                ["two"          ,5,0,0],
-                ["three"        ,5,0,0],
-                ["four"         ,5,0,0],
-                ["five"         ,5,0,0],
-                ["six"          ,5,0,0],
-                ["seven"        ,5,0,0],
-                ["eight"        ,5,0,0],
-                ["nine"         ,5,0,0],
-                ["ten"          ,5,0,0],
-                ["eleven"       ,5,0,0],
-                ["twelve"       ,5,0,0],
-                ["noon"         ,5,0,0],
-                ["midnight"     ,5,0,0],
+                ["twenty"       ,3,0,1,     5],
+                ["five"         ,3,0,2,     6],
 
-                ["hello"        ,0,0,0],
+                ["to"           ,4,0,0,     7],
+                ["past"         ,4,0,0,     7],
+
+                ["one"          ,5,0,0,     8],
+                ["two"          ,5,0,0,     8],
+                ["three"        ,5,0,0,     8],
+                ["four"         ,5,0,0,     8],
+                ["five"         ,5,0,0,     8],
+                ["six"          ,5,0,0,     8],
+                ["seven"        ,5,0,0,     8],
+                ["eight"        ,5,0,0,     8],
+                ["nine"         ,5,0,0,     8],
+                ["ten"          ,5,0,0,     8],
+                ["eleven"       ,5,0,0,     8],
+                ["twelve"       ,5,0,0,     8],
+                ["noon"         ,5,0,0,     8],
+                ["midnight"     ,5,0,0,     8],
+
             ]
+wordList = [
+                ["First_1"           ,1,0,1,     1],
+                ["First_2"           ,1,0,2,     2],
+
+                ["Second_A"        ,2,0,0,     3],
+                ["Second_B"       ,2,0,0,     3],
+
+                ["TRE"          ,3,0,0,     4]]
 
 GI_classes.wordList = wordList
 GI_classes.sizeX = 15
 GI_classes.sizeY = 15
 
-c=population(1000)
-c.printStat()
-#GI_classes.display (GI_classes.getIndFromTournament(c.individuals,18))
+import random
+random.seed("apa")
+c=population(50)
+print("i")
 
-#print(c.individuals[0])
-#GI_classes.mutate(c.individuals[0])
-#os.system("pause")
-#print(c.individuals[0])
+
+c.printStat()
+tmp=max(c.individuals)
+GI_classes.display(tmp)
+#for apa in tmp.words:
+#    print (apa)
+#print("after init")
 os.system("pause")
 
-#a,b = GI_classes.getParents(c.individuals)
-#GI_classes.display (a)
-#GI_classes.display (b)
 
-for i in range(10):
-    c.evolve(1)
+
+for i in range(100):
+    c.evolve(10)
     c.printStat()
     GI_classes.display(max(c.individuals))
-    #os.system("pause")
+    #for ind in c.individuals:
+    #    GI_classes.display(ind)
+    #    os.system("pause")
+    os.system("pause")
 
-    #for key in sorted(GI_classes.d):
-    #    print ("%s: %s" % (key, GI_classes.d[key]))
-    #print(GI_classes.d)
-    #for i in c.individuals:
-    #    print(i.index,i.fitness(),i.grandIndex)
     
 
-#print ("".join(str(P) + "\n" for P in c.getPersonalitys()))
-
-#print (GI_classes.calcFitness(c.individuals[0]))
-#print (c.individuals[0].fitness())
-
-#GI_classes.display(c.individuals[0])
-
-
-#GI_classes.debugInd(c.individuals[0])
 
