@@ -11,12 +11,12 @@ fit_OutOfRange            = -50 #prevented in getRandom word, but not from mutat
 fit_InRange               =  1
 fit_PositiveIntersection  =  43
 fit_NegativIntersection   =  -203
-fit_PositiveGroupOrder    =  188
-fit_NegativeGroupOrder    = -420
+fit_PositiveGroupOrder    =  312
+fit_NegativeGroupOrder    = -230
 
-evo_TournamentSize = 1
+evo_TournamentSize = 2
 evo_Elitism = 0
-evo_MutationRate = 0.07
+evo_MutationRate = 0.8
 
 d=Counter()
 
@@ -34,22 +34,6 @@ def OLD_getParents(lst):
     
     #print("Parents:",list(t))
     return sorted(list(t))
-
-def OLD___getIndFromTournament(lst, candidates):
-    #selects <candidates> number of elements at random from <lst>
-    #returning the highest in the selection
-    t =set()
-    lstLen = len(lst)
-    if lstLen < candidates: candidates = lstLen
-    #print("")
-    while len(t) < candidates:
-        ttt=(lst[random.randrange(lstLen)])
-        t.add(ttt)
-        #print(" added: ", ttt, end="") 
-    ret = max(list(t))
-    #print("returning:[" + str(ret.index) +"]",ret)
-
-    return ret
 
 
 
@@ -78,75 +62,16 @@ def display(ind,debug=False):
         print("#")
     print("#" * (sizeX+2))
 
-    print(ind.fitness(debug))
-    print("Grp In Order {}, Grp Out of order {}".format(ind.grpInOrder,ind.grpOutOfOrder))
-    print("txt In range {}, txt Out of range {}".format(ind.textInRange,ind.textOutOfRange))
-    print("Pos intersection {}, Neg intersection {}".format(ind.PosIntersection,ind.NegIntersection))
+    #print(ind.fitness(debug))
+    #print("Grp In Order {}, Grp Out of order {}".format(ind.grpInOrder,ind.grpOutOfOrder))
+    #print("txt In range {}, txt Out of range {}".format(ind.textInRange,ind.textOutOfRange))
+    #print("Pos intersection {}, Neg intersection {}".format(ind.PosIntersection,ind.NegIntersection))
 
     return ""
 
 
 
 
-def calcFitnessOld(ind,debug=False):
-    _fitness =0
-    _grid = dict()
-    _intersections = []    
-
-
-
-
-    ########### NEEEEEEEDS rework..... grp order 0...n needs to be top contributare to fitness.
-
-    for count,w in enumerate(ind.words):
-        ### CHECK OUT OF BOUND ###################################
-        # check if a word exeeds the set sizeX/sizeY-grid size
-        ##########################################################
-        if (w.positionEnd[0] > sizeX) or (w.positionEnd[1] > sizeY):
-            _fitness += fit_OutOfRange
-            if debug: print(w.text, "out of range", _fitness)
-        else:
-            _fitness += fit_InRange
-            if debug: print(w.text, "in range", _fitness)
-
-        ### CHECK OVERLAP CHARS AND CREATE GRID SUMMARY ##########
-        #  
-        ##########################################################
-        # create a set of intersecting positions and rank them
-        _intersections = (_grid.keys() & w.grid)
-        for i in _intersections:        
-            if _grid[i].text == w.grid[i].text:
-                #intersection with matching text values (letter)
-                _fitness += fit_PositiveIntersection
-                if debug: print(i, "pos intersect", _grid[i].text, _fitness)
-            else:
-                #intersection with missmatching text values (letter)
-                _fitness += fit_NegativIntersection
-                if debug: print(i, "neg intersect", _grid[i].text, _fitness)
-            
-        #w.grid.difference_update(_grid)
-        _grid.update(w.grid)
-        #_grid = dict(w.grid.items() + _grid.items())
-
-    #CHECK GRP ORDER   
-    #print(ind.words)   
-    wSorted = ind.words[:]
-    wSorted.sort()
-    #print(wSorted)
-    orderingIndex=0
-    
-    for i in range(1,len(wSorted)):
-        #print(wSorted[i-1].group,wSorted[i].group,groupInOrder(wSorted[i-1].group,wSorted[i].group))
-        if groupInOrder(wSorted[i-1].group,wSorted[i].group):
-            orderingIndex += 1
-            _fitness += fit_PositiveGroupOrder * orderingIndex
-            if debug: print(i, "grp order pos", _fitness)
-        else:
-            orderingIndex = 0
-            _fitness += fit_NegativeGroupOrder
-            if debug: print(i, "grp order neg", _fitness)
-
-    return _fitness
 
 def calcFitness(ind,debug=False):
     _fitness =0
@@ -154,7 +79,8 @@ def calcFitness(ind,debug=False):
     _intersections = []    
 
 
-
+    if debug:
+        print("debug")
 
     ########### NEEEEEEEDS rework..... grp order 0...n needs to be top contributare to fitness.
 
@@ -173,6 +99,7 @@ def calcFitness(ind,debug=False):
             ind.textOutOfRange += 1
             if debug: print(w.text, "out of range", _fitness)
         else:
+ 
             _fitness += fit_InRange
             ind.textInRange += 1
             if debug: print(w.text, "in range", _fitness)
@@ -225,7 +152,10 @@ def calcFitness(ind,debug=False):
 #    if ind.grpOutOfOrder==0:
     if (ind.grpOutOfOrder==0) and (ind.NegIntersection==0):
         print("GRPS OK, Int OK")
-        import sys
+
+        ind.indDetails()
+        os.system("pause")
+        #import sys
         #sys.exit("GRPS IN ORDER")
 
     return _fitness
@@ -278,13 +208,15 @@ def getOffspring(parents,popSize,dual=True):
 
 def mutate(ind):
     if random.random() < evo_MutationRate:
-
+        #t=individual()
+        #t=copy.deepcopy(ind)
+        #ind=t
         mutationType = random.random()
 
 
         if mutationType < 0:
             pass
-        elif mutationType < 0.5:
+        elif mutationType < -1:
             #Swap Mutate dont work ---- copys word should only copy cord and update grid
             #print("MUTTTTTTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
             a=random.randrange(len(ind.words))
@@ -367,23 +299,25 @@ class population(object):
             
             nextGeneration = population(0)
             # Add elits if any
-            #nextGeneration.add(copy.copy(max(self.individuals)))
-            tSet=set()
-            tSet.add(copy.copy(max(self.individuals)))
+            nextGeneration.add(copy.copy(max(self.individuals)))
+            #tSet=set()
+            #tSet.add(copy.copy(max(self.individuals)))
             
             if self.generation == 11:
                 self.generation=11
 
-            #while nextGeneration.size < self.size:
-            #    for child in getOffspring(self.getParents( ),self.size):
-            #        if nextGeneration.size < self.size: nextGeneration.add(mutate(child))
-            while len(tSet) < self.size:
+            while nextGeneration.size < self.size:
                 for child in getOffspring(self.getParents( ),self.size):
-                    if len(tSet) < self.size: tSet.add(mutate(child))
-                    #print("NEXT GEN COUNT:", len(tSet))
+                    if nextGeneration.size < self.size: nextGeneration.add(mutate(child))
+
+            #while len(tSet) < self.size:
+            #    for child in getOffspring(self.getParents( ),self.size):
+            #        if len(tSet) < self.size: 
+            #            tSet.add(mutate(child))
+            #       #print("NEXT GEN COUNT:", len(tSet))
             
-            for c in tSet:
-                nextGeneration.add(c)
+            #for c in tSet:
+            #    nextGeneration.add(c)
             
     
                 #print("Child Added", child)
@@ -418,10 +352,30 @@ class population(object):
 class individual(object):
     """A single individual, sub-partical of a population"""
 
+
+    def indDetails(self):
+        print ("#############################################")
+        print ("#         Individual Definition              ")
+        print ("#############################################")
+
+        print ("# Fitness       : {}             ".format(self.fitness()))
+        print ("# Group Order   : InOrder  ={} OutOfOrder ={}".format(self.grpInOrder,self.grpOutOfOrder))
+        print ("# Text range    : InRange  ={} OutOfRange ={}".format(self.textInRange,self.textOutOfRange))
+        print ("# Intersections : Positive ={} Negative   ={}".format(self.PosIntersection,self.NegIntersection))
+        display(self)
+
+        for w in self.words:
+            print ("text {}, pos {}, dir {}".format(w.text,w.position,w.direction))
+
+
+            
+
+
+
     #_fitness = None
     def fitness(self,debug=False,force=False):
         if (self._fitness is None) or (force):
-            self._fitness=calcFitness(self,debug)
+            self._fitness=calcFitness(self,debug=False)
         return self._fitness
 
     @property
@@ -520,7 +474,7 @@ class word(object):
     def reValidate(self):
         self.dirOffset=getDirectionOffset(self.direction)
         self.textLen = len(self.text)   
-                
+        self.grid=dict()       
         for i, c in enumerate(self.text):
             x=self.position[0]+(self.dirOffset[0]*i)
             y=self.position[1]+(self.dirOffset[1]*i)

@@ -31,19 +31,19 @@ wordList = [
                 ["to"           ,4,0,0,     7],
                 ["past"         ,4,0,0,     7],
 
-                #["one"          ,5,0,0,     8],
-                #["two"          ,5,0,0,     8],
-                #["three"        ,5,0,0,     8],
-                #["four"         ,5,0,0,     8],
-                #["five"         ,5,0,0,     8],
-                #["six"          ,5,0,0,     8],
-                #["seven"        ,5,0,0,     8],
-                #["eight"        ,5,0,0,     8],
-                #["nine"         ,5,0,0,     8],
-                #["ten"          ,5,0,0,     8],
-                #["eleven"       ,5,0,0,     8],
-                #["twelve"       ,5,0,0,     8],
-                #["noon"         ,5,0,0,     8],
+                ["one"          ,5,0,0,     8],
+                ["two"          ,5,0,0,     8],
+                ["three"        ,5,0,0,     8],
+                ["four"         ,5,0,0,     8],
+                ["five"         ,5,0,0,     8],
+                ["six"          ,5,0,0,     8],
+                ["seven"        ,5,0,0,     8],
+                ["eight"        ,5,0,0,     8],
+                ["nine"         ,5,0,0,     8],
+                ["ten"          ,5,0,0,     8],
+                ["eleven"       ,5,0,0,     8],
+                ["twelve"       ,5,0,0,     8],
+                ["noon"         ,5,0,0,     8],
                 ["midnight"     ,5,0,0,     8],
 
             ]
@@ -61,8 +61,8 @@ GI_classes.sizeX = 15
 GI_classes.sizeY = 15
 
 import random
-random.seed("h r r")
-c=population(50)
+random.seed("k u k e n")
+c=population(55)
 print("i")
 
 
@@ -77,10 +77,11 @@ os.system("pause")
 
 
 for i in range(1000):
-    c.evolve(10)
+    c.evolve(15)
     c.printStat()
-    GI_classes.display(max(c.individuals))
-    #GI_classes.debugInd(max(c.individuals))
+    #GI_classes.display(max(c.individuals))
+    max(c.individuals).indDetails()
+    #GI_classes.calcFitness(max(c.individuals),debug=True)
 
     #for ind in c.individuals:
     #    GI_classes.display(ind)
