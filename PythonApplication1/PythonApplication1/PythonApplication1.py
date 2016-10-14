@@ -1,13 +1,10 @@
-from GI_classes import individual, word, population, letter
-import GI_classes
+#from GI_classes import individual, word, population, letter
+#import GI_classes
 import hashlib
 import copy
 #print ("Hell0 W0rld")
 import os
-
-
-
-
+import random
 
 wordList = [
                 ["hello"        ,0,0,0,     0],
@@ -56,38 +53,26 @@ wordList = [
 
 #                ["TRE"          ,3,0,0,     4]]
 
-GI_classes.wordList = wordList
-GI_classes.sizeX = 15
-GI_classes.sizeY = 15
+#GI_classes.wordList = wordList
+#GI_classes.sizeX = 15
+#GI_classes.sizeY = 15
+#random.seed("k u k e n")
+#c=population(55)
+#print("i")
 
-import random
-random.seed("k u k e n")
-c=population(55)
-print("i")
+#c.printStat()
+#tmp=max(c.individuals)
+#GI_classes.display(tmp)
+#os.system("pause")
 
-
-c.printStat()
-tmp=max(c.individuals)
-GI_classes.display(tmp)
-#for apa in tmp.words:
-#    print (apa)
-#print("after init")
-os.system("pause")
+#for i in range(1000):
+#    c.evolve(15)
+#    c.printStat()    max(c.individuals).indDetails()
 
 
-
-for i in range(1000):
-    c.evolve(15)
-    c.printStat()
-    #GI_classes.display(max(c.individuals))
-    max(c.individuals).indDetails()
-    #GI_classes.calcFitness(max(c.individuals),debug=True)
-
-    #for ind in c.individuals:
-    #    GI_classes.display(ind)
-    #    os.system("pause")
-    #os.system("pause")
-
-    
-
-
+import wkGlobals
+#import wkWord
+from wkWord import *
+print(wkGlobals.apa)
+wkGlobals.apa = 15
+a = word()

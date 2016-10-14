@@ -22,20 +22,12 @@ d=Counter()
 
 tempGenInd=0
 
-def OLD_getParents(lst):
-    
-    t=set() 
-    while len(t) < min(2,len(lst)):
-        n=getIndFromTournament(evo_TournamentSize)
-        t.add(n)
-        #print(len(t))
-        #os.system("pause")
-        #print(t)
-    
-    #print("Parents:",list(t))
-    return sorted(list(t))
-
-
+def empty_copy(obj):
+    class Empty(obj.__class__):
+        def __init__(self): pass
+    newcopy = Empty(  )
+    newcopy.__class__ = obj.__class__
+    return newcopy
 
 def debugInd(ind):
     for i,w in enumerate(ind.words):
