@@ -1,0 +1,26 @@
+import  random
+import wkGlobals
+import weakref
+from wkGlobals import *
+
+class word(object):
+    """description of class"""
+    instances=weakref.WeakValueDictionary() 
+    def __init__(self,text,group,coordinate,dir):
+        self.text=text
+        self.group=group
+        self.dir = dir
+        self.coordinate = coordinate
+        word.instances.add(weakref.ref( self))
+
+    @classmethod
+    def fromRandom(cls,text=None,group=None,coordinate=None,dir=None):
+        
+        if dir is None:
+            dir = random.choice(direction.directions)
+        if coordinate is None:
+            coordinate = [random.randrange(xSize),random.randrange(xSize)]
+        return cls(text,group,coordinate,dir)
+           
+    def updateDict():
+        pass

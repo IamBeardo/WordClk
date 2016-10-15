@@ -6,7 +6,7 @@ import copy
 import os
 import random
 
-wordList = [
+wL = [
                 ["hello"        ,0,0,0,     0],
 
 
@@ -73,6 +73,15 @@ wordList = [
 import wkGlobals
 #import wkWord
 from wkWord import *
-print(wkGlobals.apa)
+from wkGlobals import *
+from wkInd import *
+from operator import *
+
+random.seed()
 wkGlobals.apa = 15
-a = word()
+
+wordlist.set(wL)
+
+
+i=ind()
+print(i)
