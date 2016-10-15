@@ -14,7 +14,11 @@ class word(object):
     #  __init__ 
     #
     ###############################    
-    def __init__(self,text,group,coordinate,dir):
+    def __init__(self,txtGrp=None,text=None,group=None,coordinate=None,dir=None):
+        if txtGrp is not None:
+            text=txtGrp[0]
+            group=txtGrp[-4]      
+        self.inRange = None
         self.text=text
         self.group      = group
         self.dir        = dir
@@ -27,7 +31,8 @@ class word(object):
         
         self.absStart = y*ySize+x
         self.absEnd=ty*ySize+tx
-        
+        self.inRange = ((x+tx)<=xSize) and ((y+ty)<=ySize)
+        print(self.inRange)
 
         self.updateGrid()
         word.track(self)
@@ -39,13 +44,15 @@ class word(object):
     #
     ###############################
     @classmethod
-    def fromRandom(cls,text=None,group=None,coordinate=None,dir=None):
-        
+    def fromRandom(cls,txtGrp=None,text=None,group=None,coordinate=None,dir=None):
+        if txtGrp is not None:
+            text=txtGrp[0]
+            group=txtGrp[1:]
         if dir is None:
             dir = random.choice(direction.directions)
         if coordinate is None:
             coordinate = [random.randrange(xSize),random.randrange(xSize)]
-        return cls(text,group,coordinate,dir)
+        return cls(None,text,group,coordinate,dir)
 
     def cloneTest(self):
         return word.fromRandom("SSSSS")
@@ -61,7 +68,7 @@ class word(object):
         #print(self.grid)
 
     def __repr__(s):
-        return "{}('{}',{},{},{})".format(s.__class__.__name__,s.text,s.group,s.coordinate,s.dir)
+        return "{}({},'{}',{},{},{})".format(s.__class__.__name__,None,s.text,s.group,s.coordinate,s.dir)
 
     ###############################
     #

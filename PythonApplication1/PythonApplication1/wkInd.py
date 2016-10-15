@@ -15,16 +15,25 @@ class ind(object):
     #  __init__ 
     #
     ###############################    
-    def __init__(self,index=-1,grandIndex=-1):
+    def __init__(self,index=-1,grandIndex=-1,fromList=None):
         self.fitness=None
         self.index=index
         self.grandIndex=index
-        self.words= [word.fromRandom(w) for w in wordlist.lst]       
- 
+        if fromList is not None:
+            self.words= fromList       
+        else:
+            self.words= [word.fromRandom(txtGrp=w) for w in wordlist.lst]       
  
         ind.track(self)
 
+    def clone(self):
+        return eval(repr(self))
 
+
+
+    def __repr__(s):
+        return "{}({},{},{})".format(s.__class__.__name__,s.index,s.grandIndex,
+                                     [w for w in s.words])
 
 
 

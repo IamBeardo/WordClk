@@ -84,4 +84,8 @@ wordlist.set(wL)
 
 
 i=ind()
+ii=eval(repr(i))
+i=ii.clone()
+ii=None
 print(i)
+print(word.printTracking())
