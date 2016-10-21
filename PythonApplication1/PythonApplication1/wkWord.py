@@ -17,10 +17,11 @@ class word(object):
     def __init__(self,txtGrp=None,text=None,group=None,coordinate=None,dir=None):
         if txtGrp is not None:
             text=txtGrp[0]
-            group=txtGrp[-4]      
+            group=txtGrp[1:]      
         self.inRange = None
         self.text=text
         self.group      = group
+        self.groupIndex = group[3]
         self.dir        = dir
         self.coordinate = coordinate
         self.len        = len(text)
@@ -31,8 +32,8 @@ class word(object):
         
         self.absStart = y*ySize+x
         self.absEnd=ty*ySize+tx
-        self.inRange = ((x+tx)<=xSize) and ((y+ty)<=ySize)
-        print(self.inRange)
+        self.inRange = ((x+tx)<xSize) and ((y+ty)<ySize)
+        #print(self.inRange)
 
         self.updateGrid()
         word.track(self)
@@ -66,6 +67,9 @@ class word(object):
             self.grid[k]=c
             _pos =  list(map(add,_pos,self.dir))
         #print(self.grid)
+
+    def getGrid():
+        return self.grid
 
     def __repr__(s):
         return "{}({},'{}',{},{},{})".format(s.__class__.__name__,None,s.text,s.group,s.coordinate,s.dir)

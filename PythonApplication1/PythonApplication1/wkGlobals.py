@@ -17,3 +17,30 @@ class wordlist(object):
     def set(wl):
         wordlist.lst=wl
         lenght=len(wl)
+
+
+class fit():
+    OUTOFBOUND = -100
+    INBOUND = 10
+    INTERSECTIONPOS = 33
+    INTERSECTIONNEG = -222
+    GROUPORDERPOS=44
+    GROUPORDERNEG=-555
+
+
+class evolution():
+    OVERPOPULATION=0
+    ELITISM=1
+
+    RANDOMPOPULATION=1
+    MAXKIDS=5
+
+    TOURNAMENT=1
+    TOUR_SIZE=3
+
+    MUTATIONRATE=0.1 
+    MUT_MOD_XY=0
+    MUT_MOD_DIR=0
+    MUT_PUSH_DIR=0
+    MUT_SWAP_POS=0
+    MUT_SHIFT_SECTION=0
