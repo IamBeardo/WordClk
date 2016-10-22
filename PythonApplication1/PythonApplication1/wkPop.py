@@ -18,7 +18,7 @@ class pop(object):
     def __init__(self,size=0,order=True):
         self.generation = 0
         self.size = size
-        mateCount = defaultdict(int)
+        self.mateCount = defaultdict(int)
 
 #        self.individuals= [individual(["ONE","TWO","THREE","4"]) for i in range(size)]
         self.individuals= [ind(i) for i in range(size)]
@@ -72,14 +72,21 @@ class pop(object):
         while len(listOfParents) < count:
             ps=self.getParents()
             if ps not in listOfParents:
-                listOfParents.add(ps)
+                valid=True
+                a,b = ps
+                if self.mateCount[a] < evolution.MAXOFFSPRING and self.mateCount[b] < evolution.MAXOFFSPRING:
+                    listOfParents.add(ps)
+                    self.mateCount[a] +=1
+                    self.mateCount[b] +=1
+                    print(self.mateCount)
         return listOfParents
 
     def getParents(self):
         ps=set()
         while len(ps) <2:
-            ps.add(tournament(evolution.TOUR_SIZE))
-        return ps
+            ps.add(self.tournament(evolution.TOUR_SIZE))
+        return tuple(ps)
 
     def tournament(self,size):
-        return max([random.randrange[self.size] for i in range(size)])
+        #t=[random.randrange[self.size] for i in range(size)]
+        return max([random.randrange(self.size) for i in range(size)])

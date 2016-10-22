@@ -33,7 +33,7 @@ class evolution():
     ELITISM=1
 
     RANDOMPOPULATION=1
-    MAXKIDS=5
+    MAXOFFSPRING=2
 
     TOURNAMENT=1
     TOUR_SIZE=3
