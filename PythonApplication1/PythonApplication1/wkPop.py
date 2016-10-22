@@ -3,6 +3,8 @@ from wkWord import *
 from wkGlobals import *
 from wkInd import *
 from operator import *
+from collections import defaultdict
+
 
 
 
@@ -16,6 +18,8 @@ class pop(object):
     def __init__(self,size=0,order=True):
         self.generation = 0
         self.size = size
+        mateCount = defaultdict(int)
+
 #        self.individuals= [individual(["ONE","TWO","THREE","4"]) for i in range(size)]
         self.individuals= [ind(i) for i in range(size)]
         #print(self.individuals[5].index)
@@ -55,11 +59,21 @@ class pop(object):
             nextGeneration.add(ind(),order=False)
 
         #mate , get parents
-         
+        for sexEncounters in self.orgy(self.size - nextGeneration.size):
+            print (sexEncounters)
 
         nextGeneration.order()
         return nextGeneration
     
+
+    def orgy(self, count):
+        listOfParents=set()
+
+        while len(listOfParents) < count:
+            ps=self.getParents()
+            if ps not in listOfParents:
+                listOfParents.add(ps)
+        return listOfParents
 
     def getParents(self):
         ps=set()
