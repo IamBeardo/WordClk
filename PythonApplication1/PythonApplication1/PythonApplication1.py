@@ -88,7 +88,7 @@ wkGlobals.apa = 15
 
 wordlist.set(wL)
 
-p = pop(475)
+p = pop(100)
 p.seedster=seedster
 print(p.STATS)
 def massEvolve(p,count):
@@ -101,10 +101,14 @@ for w in t.words:
     print (w, w.absStart)
 t.printSet()
 os.system("pause")
+with open('apa.dat','w') as f:
+    f.write("GENERATIONS,MAX,AVR,MEDIAN,DIVERSITY\n")
+    f.close
+#C:\Users\adama\Desktop\GitHub\WordClk\PythonApplication1\PythonApplication1
+filename = "apa.dat"
+for apa in range(1000):
 
-for apa in range(100):
-
-    p=p.evolve(10)
+    p=p.evolve(10,filename)
     print(p.STATS)
     #for k in p.poolSet:
     #    print(k, p.poolSet[k])

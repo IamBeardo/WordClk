@@ -114,6 +114,26 @@ class ind(object):
     def __repr__(s):
         return "{}({},{},{})".format(s.__class__.__name__,-1,-1,
                                      [w for w in s.words])
+
+
+
+
+    
+    def mutate_close_swap_words(self):
+        #random coordinate
+        aWord = random.randrange(wordlist.lenght)
+        bWord = aWord +1
+        
+        if bWord == wordlist.lenght: bWord = 1
+
+        mutant = self.clone()
+        #print(mutant.words[aWord].coordinate, mutant.words[bWord].coordinate)
+        mutant.words[aWord].coordinate, mutant.words[bWord].coordinate = mutant.words[bWord].coordinate,mutant.words[aWord].coordinate
+        #print(mutant.words[aWord].coordinate, mutant.words[bWord].coordinate)
+        #print("MUTATBBBBB")
+        return mutant.clone()
+
+
     def mutate_random_cordinate(self):
         #random coordinate
         mWord = random.randrange(wordlist.lenght)
@@ -137,7 +157,9 @@ class ind(object):
         return mutant.clone()
 
     def mutate(self):
-        m = random.choice( [self.mutate_random_cordinate,self.mutate_swap_words])
+        m = random.choice( [self.mutate_random_cordinate,
+                            self.mutate_swap_words,
+                            self.mutate_close_swap_words])
         return m()
 
 
