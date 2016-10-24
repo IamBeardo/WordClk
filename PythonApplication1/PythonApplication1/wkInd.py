@@ -50,7 +50,7 @@ class ind(object):
                 print(c,end="")
             print("")
 
-    def groupInOrder(self,a,b):
+    def groupInOrder(self,a,b,cmp):
         # Compare list of groups like: a[1,3,0] b[0,4,1]
         # Zero (0) - indicates no order
         for i in range(len(a)):
@@ -59,19 +59,26 @@ class ind(object):
         return True
 
     def calcFitness(self):
+  
         self.fitness=0
+        self.grpInOrder=0
+        self.grpOutOfOrder=0
+
         _intersections=dict()
         sWords = sorted(self.words, key=attrgetter('absStart'))
-
+        
         #CHECK GRP ORDER 
         a=sWords[0]
+        cmp=[0,0,0]
+        #cmpGRP=sWords[0].group
         for b in sWords[1:]:
-            if self.groupInOrder(a.group,b.group):
+            if self.groupInOrder(a.group,b.group,cmp):
                 self.fitness += (2-(b.groupIndex-a.groupIndex))* fit.GROUPORDERPOS
                 self.grpInOrder += 1
             else:
                 self.fitness += (a.groupIndex-b.groupIndex) * fit.GROUPORDERNEG
                 self.grpOutOfOrder += 1
+                
             a=b   
 
         ### CHECK OUT OF BOUND ###################################
@@ -107,15 +114,33 @@ class ind(object):
     def __repr__(s):
         return "{}({},{},{})".format(s.__class__.__name__,-1,-1,
                                      [w for w in s.words])
-
-    def mutate(self):
+    def mutate_random_cordinate(self):
         #random coordinate
         mWord = random.randrange(wordlist.lenght)
         coordinate = [random.randrange(xSize),random.randrange(xSize)]
         mutant = self.clone()
         mutant.words[mWord].coordinate = coordinate
-        print("MUTATEEEE")
+        #print("MUTATEEEE")
         return mutant.clone()
+
+    def mutate_swap_words(self):
+        #random coordinate
+        aWord = random.randrange(wordlist.lenght)
+        bWord = random.randrange(wordlist.lenght)
+        while bWord == aWord:
+            bWord = random.randrange(wordlist.lenght)
+        mutant = self.clone()
+        #print(mutant.words[aWord].coordinate, mutant.words[bWord].coordinate)
+        mutant.words[aWord].coordinate, mutant.words[bWord].coordinate = mutant.words[bWord].coordinate,mutant.words[aWord].coordinate
+        #print(mutant.words[aWord].coordinate, mutant.words[bWord].coordinate)
+        #print("MUTATBBBBB")
+        return mutant.clone()
+
+    def mutate(self):
+        m = random.choice( [self.mutate_random_cordinate,self.mutate_swap_words])
+        return m()
+
+
 
     ###############################
     #

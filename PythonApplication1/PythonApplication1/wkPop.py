@@ -20,6 +20,7 @@ class pop(object):
         self.generation = 0
         self.size = size
         self.mateCount =  defaultdict(int)
+        self.seedster = None
         #print (self.mateCount.items())
 
 #        self.individuals= [individual(["ONE","TWO","THREE","4"]) for i in range(size)]
@@ -29,6 +30,8 @@ class pop(object):
 
     def calcStat(self):
         self.STATS = dict()
+        self.STATS['GENERATION'] = self.generation
+        self.STATS['Seedster'] = self.seedster
         self.STATS['MIN'] = self.individuals[0].fitness
         self.STATS['MAX'] = self.individuals[self.size-1].fitness
         self.STATS['TOTAL'] = sum(i.fitness for i in self.individuals)
@@ -37,7 +40,10 @@ class pop(object):
         self.STATS['indviduals'] = len(ind.instances)
         self.STATS['words'] = len(word.instances)
 
-
+        self.evaluateGenPool()
+        self.STATS['PoolCount'] = len(self.poolSet)
+        self.STATS['Diversity'] = int(self.diversity *10000)/100
+        
     def order(self):
 
         self.individuals.sort(key=attrgetter('fitness'))
@@ -51,9 +57,13 @@ class pop(object):
         if order: self.order()
 
     def evolve(self,count=1):
-        for i in range(count):
+        for c in range(count):
+            #print("EVO")
             self.mateCount.clear()
             nextGeneration = pop(order=False )
+            nextGeneration.generation = self.generation +1
+            nextGeneration.seedster = self.seedster
+        
 
             # Add elitism
             for elit in self.individuals[-evolution.ELITISM:]:
@@ -70,16 +80,33 @@ class pop(object):
             nextGeneration.order()
             self=nextGeneration
             #self.mateCount.clear()
-            return self
+        return self
 
 
     def evaluateGenPool(self):
-      
-        pool=[( i.genString + str(i.grandIndex) +','+ str(i.index)) for i in self.individuals]
-        pool.sort()
-        for g in pool:
-            print(g)
 
+        n,N=0,0
+        sumOfn=0
+        sumOfN=0
+        self.poolSet = defaultdict(int)
+        self.poolSet.clear
+        #self.pool=[( i.genString + str(i.grandIndex) +','+ str(i.index)) for i in self.individuals]
+        for i in self.individuals:
+            self.poolSet[i.genString] +=1
+
+        # calc genpool diversity d=SUM(individuals * (individuals-1)/sum(nrOfIndividuals * (nrOfIndividuals-1)) 
+        # d is reversed to diversity where 0 is no diversity and 1 full diversity 
+        for k in self.poolSet:
+            n = self.poolSet[k]
+            sumOfn += n*(n-1)        
+            N += n
+        sumOfN = N*(N-1)
+        d=sumOfn/sumOfN
+        self.diversity = 1-d
+        #self.pool.sort()
+        #for g in pool:
+        #print(self.poolSet)
+        
 
 
 
@@ -116,7 +143,7 @@ class pop(object):
                 else:
                     pass
                     #print("IN LIST")
-        print("Count {}, reached in {} executions".format(count,i))
+        #print("Count {}, reached in {} executions".format(count,i))
         #os.system("pause")
         return listOfParents
 

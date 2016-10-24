@@ -34,7 +34,7 @@ def debugInd(ind):
         tt=individual()
         tt.words= ind.words[:i]
         display(tt,debug=True)
-        os.system("pause")
+        #os.system("pause")
 
 def display(ind,debug=False):
     _grid = dict()
@@ -146,7 +146,7 @@ def calcFitness(ind,debug=False):
         print("GRPS OK, Int OK")
 
         ind.indDetails()
-        os.system("pause")
+        #os.system("pause")
         #import sys
         #sys.exit("GRPS IN ORDER")
 

@@ -20,12 +20,12 @@ class wordlist(object):
 
 
 class fit():
-    OUTOFBOUND = -200
-    INBOUND = 3
-    INTERSECTIONPOS = 2
-    INTERSECTIONNEG = -200
+    OUTOFBOUND = 0
+    INBOUND = 0
+    INTERSECTIONPOS = 0
+    INTERSECTIONNEG = 0
     GROUPORDERPOS=300
-    GROUPORDERNEG=-500
+    GROUPORDERNEG= 0
 
 
 class evolution():
@@ -41,7 +41,7 @@ class evolution():
     #Minimal procentage of gens from each parents
     CROSSPOINTBOUNDERY=0.1
 
-    MUTATIONRATE=0.1 
+    MUTATIONRATE=0.05
     MUT_MOD_XY=0
     MUT_MOD_DIR=0
     MUT_PUSH_DIR=0

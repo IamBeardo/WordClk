@@ -7,7 +7,7 @@ import os
 import random
 
 wL = [
-                ["hello"        ,0,0,0,     0],
+                #["hello"        ,0,0,0,     0],
 
 
                 ["It"           ,1,0,1,     1],
@@ -79,26 +79,46 @@ from wkPop import *
 
 from operator import *
 
+
 random.seed()
+seedster= random.random()
+random.seed(seedster)
+
 wkGlobals.apa = 15
 
 wordlist.set(wL)
 
-p = pop(50)
+p = pop(475)
+p.seedster=seedster
 print(p.STATS)
 def massEvolve(p,count):
     pass
 
+
+t=ind(-1,-1,[word(None,'It',[1, 0, 1, 1],[11, 1],[1, 1]), word(None,'is',[1, 0, 2, 2],[0, 2],[1, 0]), word(None,'about',[2, 0, 0, 3],[5, 2],[0, 1]), word(None,'almost',[2, 0, 0, 3],[4, 2],[0, 1]), word(None,'soon',[2, 0, 0, 3],[10, 2],[1, 1]), word(None,'ten',[3, 0, 0, 4],[0, 3],[1, 0]), word(None,'quarter',[3, 0, 0, 4],[3, 4],[1, 1]), word(None,'twenty',[3, 0, 0, 4],[0, 3],[0, 1]), word(None,'half',[3, 0, 0, 4],[10, 2],[0, 1]), word(None,'twenty',[3, 0, 1, 5],[5, 4],[0, 1]), word(None,'five',[3, 0, 2, 6],[0, 5],[0, 1]), word(None,'to',[4, 0, 0, 7],[6, 6],[0, 1]), word(None,'past',[4, 0, 0, 7],[4, 5],[0, 1]), word(None,'one',[5, 0, 0, 8],[1, 14],[0, 1]), word(None,'two',[5, 0, 0, 8],[4, 12],[1, 0]), word(None,'three',[5, 0, 0, 8],[3, 10],[1, 1]), word(None,'four',[5, 0, 0, 8],[6, 7],[1, 0]),word(None,'five',[5, 0, 0, 8],[2, 7],[1, 1]), word(None,'six',[5, 0, 0, 8],[13, 9],[1, 1]), word(None,'seven',[5, 0, 0, 8],[1, 13],[1, 0]), word(None,'eight',[5, 0, 0, 8],[2, 13],[0, 1]), word(None,'nine',[5, 0, 0, 8],[2, 11],[1, 0]), word(None,'ten',[5, 0, 0, 8],[3, 14],[1, 1]), word(None,'eleven',[5, 0, 0, 8],[12, 11],[1, 0]), word(None,'twelve',[5, 0, 0, 8],[12, 14],[0, 1]), word(None,'noon',[5, 0, 0, 8],[0, 10],[1, 1]), word(None,'midnight',[5, 0, 0, 8],[14, 10],[0, 1])])
+t.calcFitness()
+for w in t.words:
+    print (w, w.absStart)
+t.printSet()
+os.system("pause")
+
 for apa in range(100):
 
-    p=p.evolve(1)
+    p=p.evolve(10)
     print(p.STATS)
-    p.evaluateGenPool()
+    #for k in p.poolSet:
+    #    print(k, p.poolSet[k])
+    #p.evaluateGenPool()
+    print(p.individuals[p.size-1].grpInOrder)
+    print(p.individuals[p.size-1].grpOutOfOrder)
+    if p.individuals[p.size-1].grpOutOfOrder == 0 :
+        print(p.individuals[p.size-1])
+        os.system("pause")
 
     #ind.printTracking()
-    p.individuals[p.size-1].printSet()
-    print((p.individuals[p.size-1].genString))
-    os.system("pause")
+    #p.individuals[p.size-1].printSet()
+    #print((p.individuals[p.size-1].genString))
+    #os.system("pause")
 
 
 
