@@ -22,6 +22,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="wkPop.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="wkInd.py">
       <SubType>Code</SubType>
     </Compile>
