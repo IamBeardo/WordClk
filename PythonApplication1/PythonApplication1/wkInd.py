@@ -5,6 +5,7 @@ from wkGlobals import *
 from wkWord import *
 from operator import *
 import operator
+import hashlib
 class ind(object):
     """description of class"""
     instances=weakref.WeakValueDictionary() 
@@ -17,6 +18,7 @@ class ind(object):
     ###############################    
     def __init__(self,index=-1,grandIndex=-1,fromList=None):
         self.fitness=None
+        self.genString = ""
         self.index=index
         self.grandIndex=grandIndex
         if fromList is not None:
@@ -28,12 +30,25 @@ class ind(object):
         self.grpOutOfOrder = 0
         self.grpInOrder = 0
 
-        self.calcFitness()
+        if self.words != []: 
+            self.calcFitness()
         ind.track(self)
 
 
     def clone(self):
         return eval(repr(self))
+
+
+    def printSet(self):
+        for y in range(ySize):
+            for x in range(xSize):
+                pass
+                c=" "
+                k=str([x,y])
+                if k in self.grid:
+                    c=self.grid[k]
+                print(c,end="")
+            print("")
 
     def groupInOrder(self,a,b):
         # Compare list of groups like: a[1,3,0] b[0,4,1]
@@ -83,12 +98,24 @@ class ind(object):
                     #intersection with missmatching text values (letter)
                     self.fitness += fit.INTERSECTIONNEG
             self.grid.update(w.grid)
+        self.genString = self.genRepr()
 
+    def genRepr(self):
+        h = hashlib.md5(repr(self).encode())
+        return h.hexdigest()
+            
     def __repr__(s):
-        return "{}({},{},{})".format(s.__class__.__name__,s.index,s.grandIndex,
+        return "{}({},{},{})".format(s.__class__.__name__,-1,-1,
                                      [w for w in s.words])
 
-
+    def mutate(self):
+        #random coordinate
+        mWord = random.randrange(wordlist.lenght)
+        coordinate = [random.randrange(xSize),random.randrange(xSize)]
+        mutant = self.clone()
+        mutant.words[mWord].coordinate = coordinate
+        print("MUTATEEEE")
+        return mutant.clone()
 
     ###############################
     #

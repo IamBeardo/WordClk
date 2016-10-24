@@ -4,6 +4,7 @@ from wkGlobals import *
 from wkInd import *
 from operator import *
 from collections import defaultdict
+import os
 
 
 
@@ -18,7 +19,8 @@ class pop(object):
     def __init__(self,size=0,order=True):
         self.generation = 0
         self.size = size
-        self.mateCount = defaultdict(int)
+        self.mateCount =  defaultdict(int)
+        #print (self.mateCount.items())
 
 #        self.individuals= [individual(["ONE","TWO","THREE","4"]) for i in range(size)]
         self.individuals= [ind(i) for i in range(size)]
@@ -34,6 +36,8 @@ class pop(object):
         self.STATS['MEDIAN'] = self.individuals[int(self.size/2)].fitness
         self.STATS['indviduals'] = len(ind.instances)
         self.STATS['words'] = len(word.instances)
+
+
     def order(self):
 
         self.individuals.sort(key=attrgetter('fitness'))
@@ -46,39 +50,74 @@ class pop(object):
         self.size +=1
         if order: self.order()
 
-    def evolve(self):
+    def evolve(self,count=1):
+        for i in range(count):
+            self.mateCount.clear()
+            nextGeneration = pop(order=False )
 
-        nextGeneration = pop(order=False )
+            # Add elitism
+            for elit in self.individuals[-evolution.ELITISM:]:
+                nextGeneration.add(elit,order=False)
 
-        # Add elitism
-        for elit in self.individuals[-evolution.ELITISM:]:
-            nextGeneration.add(elit,order=False)
+            # Add new random individuals                
+            for i in range(evolution.RANDOMPOPULATION):
+                nextGeneration.add(ind(),order=False)
 
-        # Add new random individuals                
-        for i in range(evolution.RANDOMPOPULATION):
-            nextGeneration.add(ind(),order=False)
+            #mate , get parents
+            for sexEncounters in self.orgy(self.size - nextGeneration.size):
+                nextGeneration.add(self.offspring(sexEncounters))
 
-        #mate , get parents
-        for sexEncounters in self.orgy(self.size - nextGeneration.size):
-            print (sexEncounters)
+            nextGeneration.order()
+            self=nextGeneration
+            #self.mateCount.clear()
+            return self
 
-        nextGeneration.order()
-        return nextGeneration
-    
+
+    def evaluateGenPool(self):
+      
+        pool=[( i.genString + str(i.grandIndex) +','+ str(i.index)) for i in self.individuals]
+        pool.sort()
+        for g in pool:
+            print(g)
+
+
+
+
+    def offspring(self,ps):
+        pass
+        a,b = ps
+        child = ind(fromList=[])
+        crossPointOffset = int(evolution.CROSSPOINTBOUNDERY*wordlist.lenght)
+
+        crossPoint=random.randrange(crossPointOffset,wordlist.lenght-crossPointOffset)
+        child.words= self.individuals[a].words[:crossPoint] + self.individuals[b].words[crossPoint:]
+        child.grandIndex = [a,b]
+        child.calcFitness()
+        if random.random() < evolution.MUTATIONRATE:
+           return child.mutate()
+        else:
+            return child
 
     def orgy(self, count):
         listOfParents=set()
-
+        i=0
         while len(listOfParents) < count:
+            i+=1
             ps=self.getParents()
             if ps not in listOfParents:
                 valid=True
                 a,b = ps
                 if self.mateCount[a] < evolution.MAXOFFSPRING and self.mateCount[b] < evolution.MAXOFFSPRING:
                     listOfParents.add(ps)
+                    #print("NOT IN LIST")
                     self.mateCount[a] +=1
                     self.mateCount[b] +=1
-                    print(self.mateCount)
+                    #print(self.mateCount)
+                else:
+                    pass
+                    #print("IN LIST")
+        print("Count {}, reached in {} executions".format(count,i))
+        #os.system("pause")
         return listOfParents
 
     def getParents(self):

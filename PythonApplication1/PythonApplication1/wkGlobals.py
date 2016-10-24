@@ -16,27 +16,30 @@ class wordlist(object):
     lenght=0
     def set(wl):
         wordlist.lst=wl
-        lenght=len(wl)
+        wordlist.lenght=len(wl)
 
 
 class fit():
-    OUTOFBOUND = -100
-    INBOUND = 10
-    INTERSECTIONPOS = 33
-    INTERSECTIONNEG = -222
-    GROUPORDERPOS=44
-    GROUPORDERNEG=-555
+    OUTOFBOUND = -200
+    INBOUND = 3
+    INTERSECTIONPOS = 2
+    INTERSECTIONNEG = -200
+    GROUPORDERPOS=300
+    GROUPORDERNEG=-500
 
 
 class evolution():
     OVERPOPULATION=0
     ELITISM=1
 
-    RANDOMPOPULATION=1
-    MAXOFFSPRING=2
+    RANDOMPOPULATION=2
+    MAXOFFSPRING=3
 
     TOURNAMENT=1
-    TOUR_SIZE=3
+    TOUR_SIZE=2
+
+    #Minimal procentage of gens from each parents
+    CROSSPOINTBOUNDERY=0.1
 
     MUTATIONRATE=0.1 
     MUT_MOD_XY=0

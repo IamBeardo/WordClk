@@ -84,15 +84,20 @@ wkGlobals.apa = 15
 
 wordlist.set(wL)
 
-p = pop(10)
+p = pop(50)
 print(p.STATS)
+def massEvolve(p,count):
+    pass
 
-for apa in range(10   ):
+for apa in range(100):
 
-    p=p.evolve()
+    p=p.evolve(1)
     print(p.STATS)
+    p.evaluateGenPool()
 
-    ind.printTracking()
+    #ind.printTracking()
+    p.individuals[p.size-1].printSet()
+    print((p.individuals[p.size-1].genString))
     os.system("pause")
 
 
