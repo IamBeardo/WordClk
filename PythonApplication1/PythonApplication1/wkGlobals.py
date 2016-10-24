@@ -24,15 +24,15 @@ class fit():
     INBOUND = 0
     INTERSECTIONPOS = 0
     INTERSECTIONNEG = 0
-    GROUPORDERPOS=300
-    GROUPORDERNEG= 0
+    GROUPORDERPOS=321
+    GROUPORDERNEG= 123
 
 
 class evolution():
     OVERPOPULATION=0
     ELITISM=1
 
-    RANDOMPOPULATION=2
+    RANDOMPOPULATION=0
     MAXOFFSPRING=3
 
     TOURNAMENT=1
@@ -41,7 +41,7 @@ class evolution():
     #Minimal procentage of gens from each parents
     CROSSPOINTBOUNDERY=0.1
 
-    MUTATIONRATE=0.05
+    MUTATIONRATE=0.10
     MUT_MOD_XY=0
     MUT_MOD_DIR=0
     MUT_PUSH_DIR=0
