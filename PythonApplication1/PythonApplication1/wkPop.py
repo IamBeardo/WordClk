@@ -107,8 +107,9 @@ class pop(object):
         
 
             # Add elitism
-            for elit in self.individuals[-evolution.ELITISM:]:
-                nextGeneration.add(elit,order=False)
+            if evolution.ELITISM:
+                for elit in self.individuals[-evolution.ELITISM:]:
+                    nextGeneration.add(elit,order=False)
 
             # Add new random individuals                
             for i in range(evolution.RANDOMPOPULATION):
@@ -116,7 +117,7 @@ class pop(object):
 
             #mate , get parents
             for sexEncounters in self.orgy(self.size - nextGeneration.size):
-                nextGeneration.add(self.offspring(sexEncounters))
+                nextGeneration.add(self.offspring(sexEncounters),False)
 
             nextGeneration.order()
             self=nextGeneration

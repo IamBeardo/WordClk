@@ -52,7 +52,7 @@ class word(object):
         if dir is None:
             dir = random.choice(direction.directions)
         if coordinate is None:
-            coordinate = [random.randrange(xSize),random.randrange(xSize)]
+            coordinate = [random.randrange(xSize-(len(text)*dir[0])),random.randrange(ySize-(len(text)*dir[1]))]
         return cls(None,text,group,coordinate,dir)
 
     def cloneTest(self):

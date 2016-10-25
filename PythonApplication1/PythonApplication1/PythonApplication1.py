@@ -81,26 +81,32 @@ from operator import *
 
 
 random.seed()
-seedster= random.random()
+#seedster= random.random()
+seedster= 'teike'
 random.seed(seedster)
 
 wkGlobals.apa = 15
 
 wordlist.set(wL)
 
-p = pop(100)
+p = pop(50)
 p.seedster=seedster
 print(p.STATS)
-def massEvolve(p,count):
-    pass
+for i in p.individuals:
+    i.printGrpOrder()
+#os.system("pause")
 
 
-t=ind(-1,-1,[word(None,'It',[1, 0, 1, 1],[11, 1],[1, 1]), word(None,'is',[1, 0, 2, 2],[0, 2],[1, 0]), word(None,'about',[2, 0, 0, 3],[5, 2],[0, 1]), word(None,'almost',[2, 0, 0, 3],[4, 2],[0, 1]), word(None,'soon',[2, 0, 0, 3],[10, 2],[1, 1]), word(None,'ten',[3, 0, 0, 4],[0, 3],[1, 0]), word(None,'quarter',[3, 0, 0, 4],[3, 4],[1, 1]), word(None,'twenty',[3, 0, 0, 4],[0, 3],[0, 1]), word(None,'half',[3, 0, 0, 4],[10, 2],[0, 1]), word(None,'twenty',[3, 0, 1, 5],[5, 4],[0, 1]), word(None,'five',[3, 0, 2, 6],[0, 5],[0, 1]), word(None,'to',[4, 0, 0, 7],[6, 6],[0, 1]), word(None,'past',[4, 0, 0, 7],[4, 5],[0, 1]), word(None,'one',[5, 0, 0, 8],[1, 14],[0, 1]), word(None,'two',[5, 0, 0, 8],[4, 12],[1, 0]), word(None,'three',[5, 0, 0, 8],[3, 10],[1, 1]), word(None,'four',[5, 0, 0, 8],[6, 7],[1, 0]),word(None,'five',[5, 0, 0, 8],[2, 7],[1, 1]), word(None,'six',[5, 0, 0, 8],[13, 9],[1, 1]), word(None,'seven',[5, 0, 0, 8],[1, 13],[1, 0]), word(None,'eight',[5, 0, 0, 8],[2, 13],[0, 1]), word(None,'nine',[5, 0, 0, 8],[2, 11],[1, 0]), word(None,'ten',[5, 0, 0, 8],[3, 14],[1, 1]), word(None,'eleven',[5, 0, 0, 8],[12, 11],[1, 0]), word(None,'twelve',[5, 0, 0, 8],[12, 14],[0, 1]), word(None,'noon',[5, 0, 0, 8],[0, 10],[1, 1]), word(None,'midnight',[5, 0, 0, 8],[14, 10],[0, 1])])
-t.calcFitness()
-for w in t.words:
-    print (w, w.absStart)
-t.printSet()
-os.system("pause")
+#t=ind(-1,-1,[word(None,'It',[1, 0, 1, 1],[11, 1],[1, 1]), word(None,'is',[1, 0, 2, 2],[0, 2],[1, 0]), word(None,'about',[2, 0, 0, 3],[5, 2],[0, 1]), word(None,'almost',[2, 0, 0, 3],[4, 2],[0, 1]), word(None,'soon',[2, 0, 0, 3],[10, 2],[1, 1]), word(None,'ten',[3, 0, 0, 4],[0, 3],[1, 0]), word(None,'quarter',[3, 0, 0, 4],[3, 4],[1, 1]), word(None,'twenty',[3, 0, 0, 4],[0, 3],[0, 1]), word(None,'half',[3, 0, 0, 4],[10, 2],[0, 1]), word(None,'twenty',[3, 0, 1, 5],[5, 4],[0, 1]), word(None,'five',[3, 0, 2, 6],[0, 5],[0, 1]), word(None,'to',[4, 0, 0, 7],[6, 6],[0, 1]), word(None,'past',[4, 0, 0, 7],[4, 5],[0, 1]), word(None,'one',[5, 0, 0, 8],[1, 14],[0, 1]), word(None,'two',[5, 0, 0, 8],[4, 12],[1, 0]), word(None,'three',[5, 0, 0, 8],[3, 10],[1, 1]), word(None,'four',[5, 0, 0, 8],[6, 7],[1, 0]),word(None,'five',[5, 0, 0, 8],[2, 7],[1, 1]), word(None,'six',[5, 0, 0, 8],[13, 9],[1, 1]), word(None,'seven',[5, 0, 0, 8],[1, 13],[1, 0]), word(None,'eight',[5, 0, 0, 8],[2, 13],[0, 1]), word(None,'nine',[5, 0, 0, 8],[2, 11],[1, 0]), word(None,'ten',[5, 0, 0, 8],[3, 14],[1, 1]), word(None,'eleven',[5, 0, 0, 8],[12, 11],[1, 0]), word(None,'twelve',[5, 0, 0, 8],[12, 14],[0, 1]), word(None,'noon',[5, 0, 0, 8],[0, 10],[1, 1]), word(None,'midnight',[5, 0, 0, 8],[14, 10],[0, 1])])
+
+#'Seedster': 0.995557454442144,
+#t=ind(-1,-1,[word(None,'It',[1, 0, 1, 1],[1, 2],[1, 1]), word(None,'is',[1, 0, 2, 2],[12, 1],[1, 1]), word(None,'about',[2, 0, 0, 3],[0, 11],[0, 1]), word(None,'almost',[2, 0, 0, 3],[11, 10],[1, 0]), word(None,'soon',[2, 0, 0, 3],[5, 8],[0, 1]), word(None,'ten',[3, 0, 0, 4],[13, 7],[1, 1]), word(None,'quarter',[3, 0, 0,4],[12, 8],[1, 1]), word(None,'twenty',[3, 0, 0, 4],[12, 2],[1, 0]), word(None,'half',[3, 0, 0, 4],[14, 7],[0, 1]), word(None,'twenty',[3, 0, 1, 5],[6, 2],[1, 0]), word(None,'five',[3, 0, 2, 6],[9, 12],[1, 0]), word(None,'to',[4, 0, 0, 7],[11, 7],[0, 1]), word(None,'past',[4, 0, 0, 7],[10, 12],[0, 1]), word(None,'one',[5, 0, 0, 8],[1, 3],[1, 1]), word(None,'two',[5, 0, 0, 8],[2, 3],[1, 0]), word(None,'three',[5, 0, 0, 8],[8, 6],[0, 1]), word(None,'four',[5, 0, 0, 8],[5, 7],[0, 1]), word(None,'five',[5, 0, 0, 8],[7, 7],[1, 1]), word(None,'six',[5, 0, 0, 8],[4, 5],[0, 1]), word(None,'seven',[5, 0, 0, 8],[5, 0],[0, 1]), word(None,'eight',[5, 0, 0, 8],[8, 4],[1, 0]), word(None,'nine',[5, 0, 0, 8],[5, 7],[1, 1]), word(None,'ten',[5, 0, 0, 8],[10, 6],[1, 0]), word(None,'eleven',[5, 0, 0, 8],[9,10],[1, 1]), word(None,'twelve',[5, 0, 0, 8],[11, 3],[1, 1]), word(None,'noon',[5, 0, 0, 8],[9, 9],[1, 0]), word(None,'midnight',[5, 0, 0, 8],[6, 5],[0, 1])])
+
+#t.calcFitness()
+#for w in t.words:
+#    print (w, w.absStart)
+#t.printSet()
+#os.system("pause")
 with open('apa.dat','w') as f:
     f.write("GENERATIONS,MAX,AVR,MEDIAN,DIVERSITY\n")
     f.close
@@ -108,15 +114,24 @@ with open('apa.dat','w') as f:
 filename = "apa.dat"
 for apa in range(1000):
 
-    p=p.evolve(10,filename)
+    p=p.evolve(20,filename)
     print(p.STATS)
     #for k in p.poolSet:
     #    print(k, p.poolSet[k])
     #p.evaluateGenPool()
-    print(p.individuals[p.size-1].grpInOrder)
-    print(p.individuals[p.size-1].grpOutOfOrder)
-    if p.individuals[p.size-1].grpOutOfOrder == 0 :
-        print(p.individuals[p.size-1])
+    print(p.individuals[p.size-1].intInValid )
+    print(p.individuals[p.size-1].intValid )
+    p.individuals[p.size-1].printGrpOrder()
+    #p.individuals[p.size-1].printSet()
+    #for i in p.individuals:
+    #    i.printGrpOrder()
+    #os.system("pause")
+    
+    
+    if (p.individuals[p.size-1].intInValid == 0)  and (p.individuals[p.size-1].grpOutOfOrder == 0):
+        p.individuals[p.size-1].printGrpOrder()
+        p.individuals[p.size-1].printSet()
+
         os.system("pause")
 
     #ind.printTracking()

@@ -10,7 +10,6 @@ class direction():
     DOWN = [0,1]
     directions=[LEFT,LEFTDOWN,DOWN]
 
-
 class wordlist(object):
     lst=[]
     lenght=0
@@ -18,30 +17,28 @@ class wordlist(object):
         wordlist.lst=wl
         wordlist.lenght=len(wl)
 
-
 class fit():
-    OUTOFBOUND = 0
-    INBOUND = 0
-    INTERSECTIONPOS = 0
-    INTERSECTIONNEG = 0
-    GROUPORDERPOS=321
-    GROUPORDERNEG=-123
-
+    INBOUND             =  100
+    OUTOFBOUND          = -100
+    INTERSECTIONPOS     =  1
+    INTERSECTIONNEG     =  -200
+    GROUPORDERPOS       =  5000       #all in order 16251
+    #GROUPORDERNEG      = -123
 
 class evolution():
-    OVERPOPULATION=0
-    ELITISM=1
+    OVERPOPULATION      = 0
+    ELITISM             = 1
 
-    RANDOMPOPULATION=0
-    MAXOFFSPRING=3
+    RANDOMPOPULATION    = 0
+    MAXOFFSPRING        = 3
 
-    TOURNAMENT=1
-    TOUR_SIZE=2
+    TOURNAMENT          = 1
+    TOUR_SIZE           = 2
 
     #Minimal procentage of gens from each parents
     CROSSPOINTBOUNDERY=0.1
 
-    MUTATIONRATE=0.10
+    MUTATIONRATE=0.20
     MUT_MOD_XY=0
     MUT_MOD_DIR=0
     MUT_PUSH_DIR=0
