@@ -47,6 +47,8 @@ class pop(object):
         
 
     def logStat(self,filename):
+
+        
         with open(filename,"a") as f:
             f.write(str(self.STATS['GENERATION'])+',')
             f.write(str(self.STATS['MAX'])+',')

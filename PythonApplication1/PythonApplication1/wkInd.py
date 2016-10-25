@@ -112,6 +112,7 @@ class ind(object):
                  self.grpOutOfOrder += 1
             a=b   
 
+        self.fitness = int(self.fitness)
         #for i,w in enumerate(sWords):
         #    relDiff = i - w.groupIndex
         #    if relDiff == 0: relDiff = 0.5
@@ -172,6 +173,24 @@ class ind(object):
         #print("MUTATBBBBB")
         return mutant.clone()
 
+    def mutate_push_coordinate(self):
+        #random coordinate
+        mWord = random.randrange(wordlist.lenght)
+        xm,ym = random.choice([[1,0],[-1,0],[0,1],[0,-1]])
+        xc,yc = self.words[mWord].coordinate
+        mutant = self.clone()
+        mutant.words[mWord].coordinate = [xc+xm,yc+ym]
+        #print("MUTATEEEE")
+        return mutant.clone()
+
+    def mutate_mod_direction(self):
+        #random coordinate
+        mWord = random.randrange(wordlist.lenght)
+        dir = random.choice(direction.directions)
+        mutant = self.clone()
+        mutant.words[mWord].dir=dir
+        #print("MUTATEEEE")
+        return mutant.clone()
 
     def mutate_random_cordinate(self):
         #random coordinate
@@ -196,9 +215,13 @@ class ind(object):
         return mutant.clone()
 
     def mutate(self):
-        m = random.choice( [self.mutate_random_cordinate,
+        m = random.choice( [
+                            #self.mutate_random_cordinate,
                             self.mutate_swap_words,
-                            self.mutate_close_swap_words])
+                            self.mutate_push_coordinate,
+                            self.mutate_mod_direction,
+                            self.mutate_close_swap_words
+                            ])
         return m()
 
 

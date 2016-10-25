@@ -10,7 +10,7 @@ wL = [
                 #["hello"        ,0,0,0,     0],
 
 
-                ["It"           ,1,0,1,     1],
+                ["it"           ,1,0,1,     1],
                 ["is"           ,1,0,2,     2],
 
                 ["about"        ,2,0,0,     3],
@@ -71,6 +71,7 @@ wL = [
 
 
 import wkGlobals
+import hashlib
 #import wkWord
 from wkWord import *
 from wkGlobals import *
@@ -80,16 +81,23 @@ from wkPop import *
 from operator import *
 
 
+
+
+#h = hashlib.md5(repr(self).encode())
+ #       return h.hexdigest()
+
+
+
 random.seed()
-#seedster= random.random()
-seedster= 'teike'
+seedster= hashlib.md5(str(random.random()).encode()).hexdigest()
+#seedster= 'teie'
 random.seed(seedster)
 
 wkGlobals.apa = 15
 
 wordlist.set(wL)
 
-p = pop(50)
+p = pop(150)
 p.seedster=seedster
 print(p.STATS)
 for i in p.individuals:
@@ -119,18 +127,24 @@ for apa in range(1000):
     #for k in p.poolSet:
     #    print(k, p.poolSet[k])
     #p.evaluateGenPool()
-    print(p.individuals[p.size-1].intInValid )
-    print(p.individuals[p.size-1].intValid )
+    print(p.individuals[p.size-1].intInValid,p.individuals[p.size-1].intValid )
+ 
     p.individuals[p.size-1].printGrpOrder()
-    #p.individuals[p.size-1].printSet()
+    p.individuals[p.size-1].printSet()
     #for i in p.individuals:
     #    i.printGrpOrder()
     #os.system("pause")
     
     
     if (p.individuals[p.size-1].intInValid == 0)  and (p.individuals[p.size-1].grpOutOfOrder == 0):
+        print("#####################################################")
+        print("    DONE")
+        print("#####################################################")
+        print("GENERATION: "+str(p.generation))
+        print(p.STATS)
         p.individuals[p.size-1].printGrpOrder()
         p.individuals[p.size-1].printSet()
+        print(p.individuals[p.size-1])
 
         os.system("pause")
 

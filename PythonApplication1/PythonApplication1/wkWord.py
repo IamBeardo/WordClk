@@ -50,9 +50,9 @@ class word(object):
             text=txtGrp[0]
             group=txtGrp[1:]
         if dir is None:
-            dir = random.choice(direction.directions)
+            dir = random.choice([direction.LEFT])
         if coordinate is None:
-            coordinate = [random.randrange(xSize-(len(text)*dir[0])),random.randrange(ySize-(len(text)*dir[1]))]
+            coordinate = [random.randrange(xSize-((len(text)-1)*dir[0])),random.randrange(ySize-((len(text)-1)*dir[1]))]
         return cls(None,text,group,coordinate,dir)
 
     def cloneTest(self):
