@@ -27,8 +27,12 @@ class ind(object):
             self.words= [word.fromRandom(txtGrp=w) for w in wordlist.lst]    
         
         self.grid=dict()    
-        self.grpOutOfOrder = 0
-        self.grpInOrder = 0
+        self.grpOutOfOrder  = 0
+        self.grpInOrder     = 0
+        self.wrdInBound     = 0
+        self.wrdOutOfBound  = 0
+        self.intValid       = 0
+        self.intInValid     = 0
 
         if self.words != []: 
             self.calcFitness()
@@ -50,36 +54,69 @@ class ind(object):
                 print(c,end="")
             print("")
 
-    def groupInOrder(self,a,b,cmp):
-        # Compare list of groups like: a[1,3,0] b[0,4,1]
-        # Zero (0) - indicates no order
-        for i in range(len(a)):
-            if (a[i] > b[i]) and (b[i] > 0):
-                return False
-        return True
+    def printGrpOrder(self):
+        t = [w.groupIndex for w in sorted(self.words, key=attrgetter('absStart'))]
+        print (t, self.fitness)
+
+    def groupOrderRating(self, a, b):
+        diff = (b.groupIndex - a.groupIndex)
+        order=True
+        if diff == 0:
+            #same grp
+            modifier=1
+        elif diff == 1:
+            #next grp
+            modifier=0.9 
+        else:            
+            #grp out of order
+            order=False
+            modifier =0.6 * (1-(abs(diff)/10))
+        return modifier, order
+
+
+
 
     def calcFitness(self):
   
-        self.fitness=0
-        self.grpInOrder=0
-        self.grpOutOfOrder=0
+        self.fitness        = 0
+        self.grpOutOfOrder  = 0
+        self.grpInOrder     = 0
+        self.wrdInBound     = 0
+        self.wrdOutOfBound  = 0
+        self.intValid       = 0
+        self.intInValid     = 0
 
         _intersections=dict()
         sWords = sorted(self.words, key=attrgetter('absStart'))
+
+        ### GRP ORDER ############################################
+        # the fitness gain for a grp in order is lowred anytime 
+        # a grp is out of order.
+        # bigger difference between cmp grps lowers f_gain more
+        ##########################################################
         
-        #CHECK GRP ORDER 
+        grpIdxMultiplier = fit.GROUPORDERPOS
+        diff=sWords[0].groupIndex-1
+        if not diff:
+            self.fitness = grpIdxMultiplier 
+        else:
+            grpIdxMultiplier = grpIdxMultiplier * 0.6 * (1-(diff/10))
         a=sWords[0]
-        cmp=[0,0,0]
-        #cmpGRP=sWords[0].group
         for b in sWords[1:]:
-            if self.groupInOrder(a.group,b.group,cmp):
-                self.fitness += (2-(b.groupIndex-a.groupIndex))* fit.GROUPORDERPOS
+            m, o = self.groupOrderRating(a,b)
+            grpIdxMultiplier *= m
+            if o:
+                self.fitness += grpIdxMultiplier
                 self.grpInOrder += 1
             else:
-                self.fitness += (a.groupIndex-b.groupIndex) * fit.GROUPORDERNEG
-                self.grpOutOfOrder += 1
-                
+                 self.grpOutOfOrder += 1
             a=b   
+
+        #for i,w in enumerate(sWords):
+        #    relDiff = i - w.groupIndex
+        #    if relDiff == 0: relDiff = 0.5
+        #    self.fitness += (10 / relDiff) * fit.GROUPORDERPOS
+
 
         ### CHECK OUT OF BOUND ###################################
         # check if a word exeeds the set sizeX/sizeY-grid size
@@ -88,8 +125,11 @@ class ind(object):
         for w in self.words:
             if w.inRange:
                 self.fitness += fit.INBOUND
+                self.wrdInBound += 1
             else:
                 self.fitness += fit.OUTOFBOUND
+                self.wrdOutOfBound += 1
+
 
             ### CHECK OVERLAP CHARS AND CREATE GRID SUMMARY ##########
             #  
@@ -101,9 +141,11 @@ class ind(object):
                 if self.grid[i]==w.grid[i]:
                     #intersection with matching text values (letter)
                     self.fitness += fit.INTERSECTIONPOS
+                    self.intValid += 1
                 else:
                     #intersection with missmatching text values (letter)
                     self.fitness += fit.INTERSECTIONNEG
+                    self.intInValid += 1
             self.grid.update(w.grid)
         self.genString = self.genRepr()
 
@@ -116,9 +158,6 @@ class ind(object):
                                      [w for w in s.words])
 
 
-
-
-    
     def mutate_close_swap_words(self):
         #random coordinate
         aWord = random.randrange(wordlist.lenght)
