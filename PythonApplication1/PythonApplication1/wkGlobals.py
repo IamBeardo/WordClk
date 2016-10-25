@@ -19,9 +19,9 @@ class wordlist(object):
 
 class fit():
     INBOUND             =  100
-    OUTOFBOUND          = -100
+    OUTOFBOUND          = -10000
     INTERSECTIONPOS     =  0
-    INTERSECTIONNEG     =  -400
+    INTERSECTIONNEG     =  -350
     GROUPORDERPOS       =  5000       #all in order 16251
     #GROUPORDERNEG      = -123
 

@@ -178,8 +178,12 @@ class ind(object):
         mWord = random.randrange(wordlist.lenght)
         xm,ym = random.choice([[1,0],[-1,0],[0,1],[0,-1]])
         xc,yc = self.words[mWord].coordinate
+        newX,newY = xc+xm, yc+ym
+        if newX < 0 or newX > xSize: newX = xm
+        if newY < 0 or newY > ySize: newY = ym
+
         mutant = self.clone()
-        mutant.words[mWord].coordinate = [xc+xm,yc+ym]
+        mutant.words[mWord].coordinate = [newX,newY]
         #print("MUTATEEEE")
         return mutant.clone()
 
